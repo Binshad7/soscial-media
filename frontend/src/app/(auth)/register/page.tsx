@@ -1,60 +1,56 @@
 'use client';
-import { useState, useCallback, useEffect } from 'react';
-import { Mail, Lock } from 'lucide-react';
-import { useRouter } from 'next/navigation'
-import Link from 'next/link';
-
+import { useEffect, useState } from 'react';
+import { Mail, Lock, User } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { register } from '@/lib/api';
+import Link from 'next/link';
 import GoogleIcon from '@/components/ui/GoogleIcon';
 import GitHubIcon from '@/components/ui/GitHubIcon';
-import { login } from '@/lib/api';
-import { LoginPayload } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { MESSAGES } from '@/constant/message';
+import {MESSAGES} from '@/constant/message'
 import { toast } from 'react-toastify';
+export default function RegisterPage() {
 
-export default function LoginPage() {
     const [error, setError] = useState<string | null>(null);
-    const [userData, setUserData] = useState<LoginPayload>({ email: "", password: "" })
-    const { user, loginUser } = useAuth()
     const router = useRouter()
+    const { user, loginUser } = useAuth();
     useEffect(() => {
         if (user) {
             router.push('/')
         }
     }, [])
-    const handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setUserData((prev) => ({ ...prev, [name]: value }))
-    }, [userData])
-
-
-
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const payload = {
+            name: formData.get('name') as string,
             email: formData.get('email') as string,
             password: formData.get('password') as string,
+            confirmPassword: formData.get('confirm-password') as string,
         };
 
+        if (payload.password !== payload.confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
         try {
-            const ExistUser = await login(payload);
-            loginUser(ExistUser);
-            toast.success(MESSAGES.LOGIN_SUCCESS);
+            const newUser = await register(payload);
+            loginUser(newUser)
+            toast.success(MESSAGES.REGISTER_SUCCESS)
             router.push('/')
         } catch (err) {
-            toast.error(MESSAGES.LOGIN_FAILED);
-            setError('Invalid credentials');
+            toast.error(MESSAGES.REGISTER_FAILED)
+            setError('Registration failed');
         }
     };
 
     return (
         <div className="w-full max-w-md">
             <div className="text-center mb-8 animate-fade-in">
-                <p className="text-slate-400 mt-2">Welcome back! Sign in to continue</p>
+                <p className="text-slate-400 mt-2">Create your account to get started</p>
             </div>
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl shadow-xl backdrop-blur-sm p-8">
                 <div className="space-y-3 mb-6">
@@ -74,21 +70,25 @@ export default function LoginPage() {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <Input handleOnChange={handleOnChange} id="email" name="email" type="email" label="Email" icon={<Mail />} placeholder="you@example.com" />
-                    <Input handleOnChange={handleOnChange} id="password" name="password" type="password" label="password" icon={<Lock />} placeholder="••••••••" />
+                    <Input id="name" name="name" type="text" label="Full Name" icon={<User />} placeholder="John Doe" />
+                    <Input id="email" name="email" type="email" label="Email" icon={<Mail />} placeholder="you@example.com" />
+                    <Input id="password" name="password" type="password" label="Password" icon={<Lock />} placeholder="••••••••" />
+                    <Input
+                        id="confirm-password"
+                        name="confirm-password"
+                        type="password"
+                        label="Confirm Password"
+                        icon={<Lock />}
+                        placeholder="••••••••"
+                    />
                     {error && <p className="text-red-500 text-sm">{error}</p>}
-                    <div className="flex items-center justify-end">
-                        <Link href="/forgot-password" className="text-sm text-purple-400 hover:underline font-medium">
-                            Forgot password?
-                        </Link>
-                    </div>
-                    <Button type="submit">Sign In</Button>
+                    <Button type="submit">Create Account</Button>
                 </form>
                 <div className="mt-6 text-center">
                     <p className="text-sm text-slate-400">
-                        Don&apos;t have an account?{' '}
-                        <Link href="/register" className="text-purple-400 hover:underline font-semibold">
-                            Sign Up
+                        Already have an account?{' '}
+                        <Link href="/login" className="text-purple-400 hover:underline font-semibold">
+                            Sign In
                         </Link>
                     </p>
                 </div>

@@ -1,35 +1,22 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { ReactNode } from 'react';
+import ToastProvider from '@/components/ui/ToastContainer';
+import UserProvider from '@/context/UserProvider';
+import './global.css'
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "Chat Application",
-  description: "chat video voice chating videocall voicecall starnger talk ",
+export const metadata = {
+    title: 'ChatFlow',
+    description: 'A group chat app',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {/* header or nav */}
-        {children}
-        {/* footer  */}
-      </body>
-    </html>
-  );
+export default function RootLayout({ children }: { children: ReactNode }) {
+    return (
+        <html lang="en">
+            <body className="bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950 min-h-screen">
+                <UserProvider>
+                    <ToastProvider position="top-right" />
+                    <main className="flex items-center justify-center p-4">{children}</main>
+                </UserProvider>
+            </body>
+        </html>
+    );
 }
