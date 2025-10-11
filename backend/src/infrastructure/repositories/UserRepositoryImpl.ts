@@ -5,9 +5,6 @@ export class UserRepository {
   async createUser(user: IUser) {
     return UserModel.create(user);
   }
-  async loginUser(email: string) {
-    return UserModel.findOne({ email })
-  }
   async findById(id: string) {
     return UserModel.findById(id);
   }

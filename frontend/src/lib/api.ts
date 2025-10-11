@@ -6,6 +6,7 @@ async function postAuth<T extends LoginPayload | RegisterPayload>(
   payload: T
 ): Promise<AuthResponse> {
   const { data } = await userAxios.post<AuthResponse>(url, payload);
+  console.log(data)
   return data;
 }
 

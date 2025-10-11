@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { RegisterUser } from "../../application/usecases/user/RegisterUser";
 import { LoginUser } from "../../application/usecases/user/LoginUser";
-
+import { setAuthCookie } from "../helpers/cookieHelper";
 export class UserController {
     constructor(
         private registerUser: RegisterUser,
@@ -9,22 +9,14 @@ export class UserController {
     ) { }
 
     register = async (req: Request, res: Response) => {
-        try {
-            const user = await this.registerUser.execute(req.body);
-            res.status(201).json(user);
-        } catch (e: any) {
-            res.status(400).json({ error: e.message });
-        }
+            const { username, email, token, message } = await this.registerUser.execute(req.body);
+            setAuthCookie(res, token)
+            res.status(201).json({ message, username, email });
     };
 
     login = async (req: Request, res: Response) => {
-        try {
-            const user = await this.loginUser.execute(req.body.email, req.body.password)
-            res.status(200).json(user);
-        } catch (error: any) {
-            res.status(500).json({ error: error.message })
-        }
+            const { username, email, token, message } = await this.loginUser.execute(req.body.email, req.body.password)
+            setAuthCookie(res, token)
+            res.status(200).json({ message, username, email });
     }
-
-
-}
+} 

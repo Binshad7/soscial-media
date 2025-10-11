@@ -5,6 +5,7 @@ export interface IUser {
     displayName?: string;
     avatar?: string;
     password: string;
+    confirm_password:string,
     status?: 'online' | 'offline' | 'busy';
     contacts?: string[];
     groups?: string[];

@@ -1,7 +1,11 @@
-export enum StatusCode {
-    created = 201,
-    success = 200,
-    serverError = 500,
-    pageNotFound = 404,
-    userSideError = 400
+export enum HTTP_STATUS {
+    OK = 200,
+    CREATED = 201,
+    BAD_REQUEST = 400,
+    UNAUTHORIZED = 401,
+    FORBIDDEN = 403, // NOT PERMISSION TO ACCESS IN THERE
+    NOT_FOUND = 404,
+    CONFLICT = 409, // SAME NAME OR EMAIL
+    INTERNAL_SERVER_ERROR = 500, 
+    SERVICE_UNAVAILABLE = 503
 }

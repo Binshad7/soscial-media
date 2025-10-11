@@ -16,10 +16,11 @@ const userAxios = axios.create({
 userAxios.interceptors.response.use(
     response => response,
     error => {
+        console.log(error)
         const status = error?.response?.status;
         const message =
             error?.response?.data?.message || error?.message || "Something went wrong";
-
+        
         if (status === 401) {
             toast.error("Session expired. Please log in again.");
             router.push("/login");

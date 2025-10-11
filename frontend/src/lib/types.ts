@@ -5,13 +5,14 @@ export interface LoginPayload {
 }
 
 export interface RegisterPayload {
-  name: string;
+  username: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  confirm_password: string;
 }
+
 export interface userPayload {
-  name?: string,
+  username?: string,
   email?: string
 }
 export interface AuthResponse {

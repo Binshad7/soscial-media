@@ -9,7 +9,7 @@ import GoogleIcon from '@/components/ui/GoogleIcon';
 import GitHubIcon from '@/components/ui/GitHubIcon';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import {MESSAGES} from '@/constant/message'
+import { MESSAGES } from '@/constant/message'
 import { toast } from 'react-toastify';
 export default function RegisterPage() {
 
@@ -25,13 +25,13 @@ export default function RegisterPage() {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const payload = {
-            name: formData.get('name') as string,
+            username: formData.get('name') as string,
             email: formData.get('email') as string,
             password: formData.get('password') as string,
-            confirmPassword: formData.get('confirm-password') as string,
+            confirm_password: formData.get('confirm-password') as string,
         };
 
-        if (payload.password !== payload.confirmPassword) {
+        if (payload.password !== payload.confirm_password) {
             setError('Passwords do not match');
             return;
         }
@@ -41,8 +41,8 @@ export default function RegisterPage() {
             loginUser(newUser)
             toast.success(MESSAGES.REGISTER_SUCCESS)
             router.push('/')
-        } catch (err) {
-            toast.error(MESSAGES.REGISTER_FAILED)
+        } catch (err: any) {
+            toast.error(err.response.data.error)
             setError('Registration failed');
         }
     };
