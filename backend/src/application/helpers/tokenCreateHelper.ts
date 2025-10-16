@@ -1,6 +1,6 @@
 import { generateJwtToken } from "./jwtToken";
-export const createTokenPair = (_id: string) => {
-    const token = generateJwtToken(_id);
-    const refreshToken = generateJwtToken(_id, true)
+export const createTokenPair = (redisKey: string) => {
+    const token = generateJwtToken(redisKey);
+    const refreshToken = generateJwtToken(redisKey, true)
     return { token, refreshToken }
-}
+}   

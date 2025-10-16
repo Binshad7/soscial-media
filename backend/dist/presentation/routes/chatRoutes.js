@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const ChatRepositoryImpl_1 = require("../../infrastructure/repositories/ChatRepositoryImpl");
+const SendMessage_1 = require("../../application/usecases/chat/SendMessage");
+const ChatController_1 = require("../controllers/ChatController");
+const router = (0, express_1.Router)();
+const chatRepository = new ChatRepositoryImpl_1.ChatRepository();
+const sendMessage = new SendMessage_1.SendMessage(chatRepository);
+const chatController = new ChatController_1.ChatController(sendMessage);
+router.post("/send", chatController.send);
+exports.default = router;

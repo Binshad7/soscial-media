@@ -1,0 +1,20 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const UserRepositoryImpl_1 = require("../../infrastructure/repositories/UserRepositoryImpl");
+const UserController_1 = require("../controllers/UserController");
+const RegisterUser_1 = require("../../application/usecases/user/RegisterUser");
+const LoginUser_1 = require("../../application/usecases/user/LoginUser");
+const router = (0, express_1.Router)();
+const userRepository = new UserRepositoryImpl_1.UserRepository(); // mongodb layer all db opretion in side of that
+const registerUser = new RegisterUser_1.RegisterUser(userRepository);
+const loginUser = new LoginUser_1.LoginUser(userRepository);
+const userController = new UserController_1.UserController(registerUser, loginUser);
+router.post("/register", userController.register);
+router.post("/login", userController.login);
+// router.patch('/sendRequest/:userId', authMiddleware, (req, res) => { });
+// router.patch('/acceptRequest/:userId', authMiddleware, (req, res) => { });
+// router.get('/getRequests', authMiddleware, (req, res) => { });
+// router.get('/getFriends', authMiddleware, (req, res) => { });
+// router.get('/searchUsers', authMiddleware, (req, res) => { });
+exports.default = router;

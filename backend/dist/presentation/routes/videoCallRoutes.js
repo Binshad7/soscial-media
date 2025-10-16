@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const VideoCallRepositoryImpl_1 = require("../../infrastructure/repositories/VideoCallRepositoryImpl");
+const StartVideoCall_1 = require("../../application/usecases/call/StartVideoCall");
+const VideoCallController_1 = require("../controllers/VideoCallController");
+const router = (0, express_1.Router)();
+const videoCallRepository = new VideoCallRepositoryImpl_1.VideoCallRepository();
+const startVideoCall = new StartVideoCall_1.StartVideoCall(videoCallRepository);
+const videoCallController = new VideoCallController_1.VideoCallController(startVideoCall);
+router.post("/start", videoCallController.start);
+exports.default = router;
