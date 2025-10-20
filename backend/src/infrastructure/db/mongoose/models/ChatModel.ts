@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { IChat, IMessage } from "../../../domain/entities/Chat";
+import { IChat, IMessage } from '../../../../domain/entities/Chat';
 
 const MessageSchema: Schema = new Schema<IMessage>({
     sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },

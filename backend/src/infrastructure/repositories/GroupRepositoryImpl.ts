@@ -1,4 +1,4 @@
-import GroupModel from "../db/mongoose/GroupModel";
+import GroupModel from "../db/mongoose/models/GroupModel";
 import { IGroup } from "../../domain/entities/Group";
 
 export class GroupRepository {

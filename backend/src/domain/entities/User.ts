@@ -2,11 +2,8 @@ export interface IUser {
     _id?: string;
     username: string;
     email: string;
-    confirm_password: string;
     password: string;
-    displayName?: string;
-    avatar?: string;
-    bio?: string;
+    confirm_password: string ;
     status?: 'online' | 'offline' | 'busy';
     followers?: string[];
     following?: string[];

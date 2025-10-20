@@ -1,10 +1,9 @@
 import express from 'express';
-import dotenv from "dotenv";
 import cors from 'cors';
 import cookiePareser from 'cookie-parser'
 import morgan from 'morgan'
 
-import { connectDB } from "./config/database";  // db connection
+import { connectDB } from './infrastructure/db/mongoose/connectDB';  // db connection
 import { connectRedis } from './infrastructure/services/redis/redis.Client'; // redis client connection
 
 import userRoutes from "./presentation/routes/userRoutes";
@@ -15,15 +14,29 @@ import { authMiddleware } from "./presentation/middlewares/authMiddleware";
 import { errorHandler } from "./presentation/middlewares/errorHandler";
 
 import { ENV } from './config/env_vars' // env var
+import { logger } from './shared/helpers/loger';
 
 const app = express();
 
 // cors
+const allowedOrigins = (ENV.FRONTEND_ORIGINS ?? ENV.FRONTEND_URL ?? "")
+    .split(",")
+    .map(o => o.trim())
+    .filter(Boolean);
+
 const corsOptions = {
-    origin: ENV.FRONTENT_URL,
+    origin: (origin: any, callback: any) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     optionsSuccessStatus: 200
 }
+
+app.use(cors(corsOptions));
 app.use(cookiePareser()) // to access data from cookie and session like exmple of data jsonweb accessing from cookie  // It makes cookies available in req.cookies.
 app.use(cors(corsOptions)) // to give permison to external End Points
 app.use(express.json()); // 
@@ -41,5 +54,5 @@ app.use(errorHandler);
 app.listen(ENV.PORT, () => {
     connectDB();
     connectRedis()
-    console.log('server is running')
+    logger.info("server running success fully")
 })

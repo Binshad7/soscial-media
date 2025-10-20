@@ -1,24 +1,14 @@
-If a helper is only used inside Call, then put it i
-ex 
-src/
-  application/
-    usecases/
-      Call/
-        helpers/
-          callValidator.ts
----------------------------------
-other ways
-src/
-  application/
-    helpers/
-      passwordHelper.ts
-      tokenHelper.ts
-      dateHelper.ts
+improve  where we can make it 1 redis session stroge change to class method and use (DI) and  also the authMiddleware (optionaly);
 
----------------------------
-Skill	                  Action
-Architecture	          Study Clean Architecture, DDD, and Hexagonal patterns
-Code Quality	          Practice writing unit tests, use linters, follow naming conventions
-Documentation	          Write README files, comment complex logic, explain folder structures
-Collaboration	          Review others’ code, ask for feedback, mentor juniors when possible
-Thinking	Always ask:  “Will this scale? Is this readable? Is this testable?”
+
+---------Trancastion ------
+if we use tracntion in sendRequest that time we can use the promise.all method  (warn)
+
+add error handling properly in every where and use senderlized one  >
+
+next is refresh token rotate and reuse detection  >
+
+
+zod validater  > 
+
+and create DI containr > completed

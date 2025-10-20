@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { IVideoCall } from "../../../domain/entities/VideoCall";
+import { IVideoCall } from "../../../../domain/entities/VideoCall";
 
 const VideoCallSchema: Schema = new Schema<IVideoCall>({
   roomId: { type: String, required: true, unique: true },

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
-import { IGroup } from "../../../domain/entities/Group";
-import { IMessage } from "../../../domain/entities/Chat";
+import { IGroup } from "../../../../domain/entities/Group";
+import { IMessage } from "../../../../domain/entities/Chat";
 
 const GroupMessageSchema = new Schema<IMessage>({
     sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },

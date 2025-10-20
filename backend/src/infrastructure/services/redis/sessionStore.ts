@@ -2,7 +2,7 @@ import { redisClient } from "./redis.Client";
 
 export const storeUserSession = async (
     redisKey: string,
-    userId: string,
+    _id: string,
     refreshToken: string,
     username: string,
     email: string
@@ -12,7 +12,7 @@ export const storeUserSession = async (
 
 
     await redisClient.set(refreshKey, refreshToken, { EX: 604800 }); // 7 days optional we can delete this 
-    const userData = { userId, username, email };
+    const userData = { _id, username, email };
     await redisClient.set(userKey, JSON.stringify(userData), { EX: 604800 }); // Optional: same as refresh
 };
 

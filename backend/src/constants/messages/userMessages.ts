@@ -10,3 +10,10 @@ export const USER_MESSAGE = {
     LOGIN_SUCCESS: "Login successful.",
     INVALID_CREDENTIALS: "Invalid email or password.",
 };
+export const FOLLOW_MESSAGE = {
+    FOLLOW_REQUEST_SEND: 'Follow Request Send Successfully',
+    SEND_REQUST_FAILD: 'Send Follow Requst Is Faild',
+    SEND_REQUST_SELF_FOLLOW: 'You cannot follow yourself',
+    RECIVER_NOT_FOUND: 'Receiver user not found',
+    FOLLOW_REQUEST_ALREADY_SEND: 'Follow request already sent'
+}

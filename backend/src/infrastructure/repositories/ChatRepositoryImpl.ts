@@ -1,4 +1,4 @@
-import ChatModel from "../db/mongoose/ChatModel";
+import ChatModel from "../db/mongoose/models/ChatModel";
 import { IChat, IMessage } from "../../domain/entities/Chat";
 
 export class ChatRepository {

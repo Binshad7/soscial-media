@@ -1,4 +1,4 @@
-import VideoCallModel from "../db/mongoose/VideoCallModel";
+import VideoCallModel from "../db/mongoose/models/VideoCallModel";
 import { IVideoCall } from "../../domain/entities/VideoCall";
 
 export class VideoCallRepository {
