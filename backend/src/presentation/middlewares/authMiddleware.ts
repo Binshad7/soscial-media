@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import { USER_MESSAGE } from '../../constants/messages/userMessages';
+import { USER_MESSAGE } from '../../constants/messages/ResponseMessages';
 import { HTTP_STATUS } from "../../constants/StatusCodes";
 import { COOKIE_VAR } from "../../constants/cookieVariable";
 import { verifyToken } from "../helpers/jsonWebTokenVerify";
-import { generateJwtToken } from "../../application/helpers/jwtToken";
 import { setAuthCookie } from "../helpers/cookieHelper";
-import { getUserSession } from "../../infrastructure/services/redis/sessionStore";
+import { deleteUserSession, getUserSession, storeUserSession } from "../../infrastructure/services/redis/sessionStore";
 import { AppError } from "../../domain/errors/AppError";
-import { UserSession } from "../../infrastructure/services/redis/types/UserSession";
-import { COMMON_MESSAGES } from "../../constants/messages/commonMessages";
+import { hashToken } from "../../shared/helpers/hashToken";
+import { createTokenPair } from "../../application/helpers/tokenCreateHelper";
+import { logger } from "../../shared/helpers/loger";
 
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +20,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         const redisKey = decoded.redisKey;
 
         const userSession = await getUserSession(redisKey);
-        if (!userSession) return next(new AppError(USER_MESSAGE.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
+        if (!userSession) return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
         req.user = userSession.user;
         return next();
       } catch (err: any) {
@@ -28,27 +28,33 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       }
     }
 
-    const refreshToken = req.cookies[COOKIE_VAR.REFRESH_TOKEN];
-    if (refreshToken) {
+    const currRefreshToken = req.cookies[COOKIE_VAR.REFRESH_TOKEN];
+    if (currRefreshToken) {
       try {
-        const decoded: any = await verifyToken(refreshToken);
-        const redisKey = decoded.redisKey;
-        
-        const userSession = await getUserSession(redisKey);
-        if (!userSession) return next(new AppError(USER_MESSAGE.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
-        if (userSession.refreshToken !== refreshToken) return next(new AppError(USER_MESSAGE.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
+        const decoded: any = await verifyToken(currRefreshToken);
+        const decodedredisKey = decoded.redisKey;
 
-        const newAccessToken = generateJwtToken(redisKey);
-        setAuthCookie(res, COOKIE_VAR.ACCESS_TOKEN, newAccessToken, COOKIE_VAR.ACCESS_TOKEN_EXPIRE);
+        const userSession = await getUserSession(decodedredisKey);
+        if (!userSession) return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
+        const hashedRefreshToken = hashToken(currRefreshToken);
+        if (userSession.refreshToken !== hashedRefreshToken) return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
+
+        const { accessToken, refreshToken, redisKey } = createTokenPair();
+        await deleteUserSession(decodedredisKey)
+        await storeUserSession(redisKey, userSession.user._id, refreshToken, userSession.user.username, userSession.user.email)
+        setAuthCookie(res, accessToken, refreshToken)
+
         req.user = userSession.user;
         return next();
-      } catch (err: any) {
-        return next(new AppError(USER_MESSAGE.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
+      } catch (error: any) {
+        logger.error(error.message)
+        return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
       }
     }
 
-    return next(new AppError(USER_MESSAGE.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
-  } catch (error) {
+    return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
+  } catch (error: any) {
+    logger.error(error.message)
     return next(error);
-    }
+  }
 };

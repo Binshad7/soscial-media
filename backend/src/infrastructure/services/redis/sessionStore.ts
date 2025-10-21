@@ -1,3 +1,4 @@
+import { hashToken } from "../../../shared/helpers/hashToken";
 import { redisClient } from "./redis.Client";
 
 export const storeUserSession = async (
@@ -7,11 +8,11 @@ export const storeUserSession = async (
     username: string,
     email: string
 ) => {
+    const hashedRefreshToken = hashToken(refreshToken)
     const refreshKey = `refresh:${redisKey}`;
     const userKey = `user:${redisKey}`;
 
-
-    await redisClient.set(refreshKey, refreshToken, { EX: 604800 }); // 7 days optional we can delete this 
+    await redisClient.set(refreshKey, hashedRefreshToken, { EX: 604800 }); // 7 days optional we can delete this 
     const userData = { _id, username, email };
     await redisClient.set(userKey, JSON.stringify(userData), { EX: 604800 }); // Optional: same as refresh
 };

@@ -1,41 +1,49 @@
 import UserModel from "../db/mongoose/models/UserModel";
-import { IUser } from "../../domain/entities/User";
+import { IUser, StoreUser } from "../../domain/entities/User";
 import mongoose from "mongoose";
 export class UserRepository {
-  async createUser(user: IUser) {
-    return UserModel.create(user);
+  async createUser(user: StoreUser) {
+    try {
+      return UserModel.create(user);
+    } catch (error: any) {
+      throw error
+    }
   }
   async findById(id: string) {
-    return UserModel.findById(id);
+    try {
+      return UserModel.findById(id);
+    } catch (error: any) {
+      throw error
+    }
   }
   async findByEmail(email: string) {
-    return UserModel.findOne({ email });
+    try {
+      return UserModel.findOne({ email });
+    } catch (error: any) {
+      throw error
+    }
   }
   async updateUser(id: string, update: Partial<IUser>) {
     return UserModel.findByIdAndUpdate(id, update, { new: true });
   }
   async sendFollowRequset(senderId: string, receiverId: string) {
-
-    if (!senderId || !receiverId) throw new Error("Invalid user ids");
-    if (senderId === receiverId) throw new Error("Cannot send request to self");
     const session = await mongoose.startSession()
     try {
-
-
-      await UserModel.updateOne(
+      const f1 = await UserModel.updateOne(
         { _id: receiverId, friendRequests: { $ne: senderId } },
         { $addToSet: { friendRequests: senderId } },
         { session }
       )
-      await UserModel.updateOne(
+      const f2 = await UserModel.updateOne(
         { _id: senderId, sentRequests: { $ne: receiverId } },
         { $addToSet: { sentRequests: receiverId } },
         { session }
       )
       session.commitTransaction()
-      return
+      return {f1,f2}
     } catch (error: any) {
       session.abortTransaction()
+      throw error
 
     } finally {
       session.endSession()

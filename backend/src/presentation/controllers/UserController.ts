@@ -2,12 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { RegisterUser } from "../../application/usecases/user/RegisterUser";
 import { LoginUser } from "../../application/usecases/user/LoginUser";
 import { setAuthCookie } from "../helpers/cookieHelper";
-import { COOKIE_VAR } from '../../constants/cookieVariable';
 import { sendFollowRequest } from "../../application/usecases/user/sendFollowRequest";
-import { AppError } from "../../domain/errors/AppError";
-import { COMMON_MESSAGES } from "../../constants/messages/commonMessages";
-import { HTTP_STATUS } from "../../constants/StatusCodes";
 import { logger } from "../../shared/helpers/loger";
+import { authSuccess, registerSuccess, success } from "../helpers/response";
 
 export class UserController {
     constructor(
@@ -17,44 +14,39 @@ export class UserController {
     ) { }
 
     register = async (req: Request, res: Response, next: NextFunction) => {
-
         try {
-            const { username, email, token, refreshToken, message } = await this.registerUser.execute(req.body);
-            setAuthCookie(res, COOKIE_VAR.ACCESS_TOKEN, token, COOKIE_VAR.ACCESS_TOKEN_EXPIRE) // 1 day
-            setAuthCookie(res, COOKIE_VAR.REFRESH_TOKEN, refreshToken, COOKIE_VAR.REFRESH_TOKEN_EXPIRE) // 7 day
-            logger.info(message)
-            res.status(HTTP_STATUS.CREATED).json({ message, username, email });
+            const { username, email, accessToken, refreshToken, message } = await this.registerUser.execute(req.body);
+            setAuthCookie(res, accessToken, refreshToken);
+            logger.info(`Registration successful for user: ${username}`, { requestId: req.requestId });
+            return registerSuccess(res, { username, email }, { accessToken, refreshToken });
         } catch (error: any) {
-            logger.error(error.message)
-            next(error)
+            logger.error(`Registration failed: ${error.message}`, { requestId: req.requestId });
+            next(error);
         }
     };
 
     login = async (req: Request, res: Response, next: NextFunction) => {
-
         try {
-            const { username, email, token, refreshToken, message } = await this.loginUser.execute(req.body.email, req.body.password)
-            setAuthCookie(res, COOKIE_VAR.ACCESS_TOKEN, token, COOKIE_VAR.ACCESS_TOKEN_EXPIRE)
-            setAuthCookie(res, COOKIE_VAR.REFRESH_TOKEN, refreshToken, COOKIE_VAR.REFRESH_TOKEN_EXPIRE)
-            logger.info(message)
-            res.status(HTTP_STATUS.OK).json({ message, username, email });
-
+            const { username, email, accessToken, refreshToken, message } = await this.loginUser.execute(req.body.email, req.body.password);
+            setAuthCookie(res, accessToken, refreshToken);
+            logger.info(`Login successful for user: ${username}`, { requestId: req.requestId });
+            return authSuccess(res, { username, email });
         } catch (error: any) {
-            logger.error(error.message)
-            next(error)
+            logger.error(`Login failed: ${error.message}`, { requestId: req.requestId });
+            next(error);
         }
     }
 
     sendFollowRequest = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { reciverID } = req.params; // sending request to this user
-            const senderId = req.user?._id
+            const senderId = req.user?._id;
             const { message } = await this.sendFollowReq.execute(senderId, reciverID);
-            logger.info(message)
-            res.status(HTTP_STATUS.OK).json({ message })  // another one option insted of passing just a msg   we can send all friend rq friends
+            logger.info(`Follow request sent: ${message}`, { requestId: req.requestId, senderId, receiverId: reciverID });
+            return success(res, { message }, "Follow request sent successfully");
         } catch (error: any) {
-            logger.error(error.message)
-            next(error)
+            logger.error(`Follow request failed: ${error.message}`, { requestId: req.requestId });
+            next(error);
         }
     }
 } 

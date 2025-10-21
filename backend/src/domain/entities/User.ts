@@ -3,7 +3,7 @@ export interface IUser {
     username: string;
     email: string;
     password: string;
-    confirm_password: string ;
+    confirm_password: string;
     status?: 'online' | 'offline' | 'busy';
     followers?: string[];
     following?: string[];
@@ -11,4 +11,21 @@ export interface IUser {
     sentRequests?: string[];   // outgoing requests
     groups?: string[];
     lastSeen?: Date;
+}
+export interface RegisterUserData {
+    username: string,
+    password: string,
+    email: string,
+    confirm_password: string
+}
+export interface StoreUser {
+    username: string,
+    password: string,
+    email: string
+}
+
+export interface sessionUser {
+    _id: string,
+    username: string,
+    email: string
 }

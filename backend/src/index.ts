@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import cookiePareser from 'cookie-parser'
+import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 
 import { connectDB } from './infrastructure/db/mongoose/connectDB';  // db connection
@@ -12,6 +12,11 @@ import groupRoutes from "./presentation/routes/groupRoutes";
 import videoCallRoutes from "./presentation/routes/videoCallRoutes";
 import { authMiddleware } from "./presentation/middlewares/authMiddleware";
 import { errorHandler } from "./presentation/middlewares/errorHandler";
+
+// Security and utility middleware
+import { securityHeaders, mongoSanitization, requestSizeLimiter, xssProtection } from "./presentation/middlewares/security";
+import { requestId } from "./presentation/middlewares/requestId";
+import { generalLimiter } from "./presentation/middlewares/rateLimiter";
 
 import { ENV } from './config/env_vars' // env var
 import { logger } from './shared/helpers/loger';
@@ -36,12 +41,28 @@ const corsOptions = {
     optionsSuccessStatus: 200
 }
 
+// Security middleware (order matters!)
+app.use(securityHeaders);
+app.use(mongoSanitization);
+app.use(xssProtection);
+app.use(requestSizeLimiter);
+app.use(requestId);
+
+// CORS and parsing middleware
 app.use(cors(corsOptions));
-app.use(cookiePareser()) // to access data from cookie and session like exmple of data jsonweb accessing from cookie  // It makes cookies available in req.cookies.
-app.use(cors(corsOptions)) // to give permison to external End Points
-app.use(express.json()); // 
-app.use(express.urlencoded({ extended: true })); // 
-app.use(morgan('dev')) // to debug routes
+app.use(cookieParser()); // to access data from cookie and session
+app.use(express.json({ limit: '10mb' })); 
+app.use(express.urlencoded({ extended: true, limit: '10mb' })); 
+
+// Logging
+app.use(morgan('combined', {
+  stream: {
+    write: (message: string) => logger.info(message.trim())
+  }
+}));
+
+// Rate limiting
+app.use(generalLimiter);
 
 
 

@@ -11,11 +11,11 @@ export const logger = winston.createLogger({
   ),
   defaultMeta: { service: "user-service" },
   transports: [
-    // ✅ Print to console
+   
     new winston.transports.Console(),
 
-    // ✅ Save to files
-    new winston.transports.File({ filename: "error.log", level: "error" }),
-    new winston.transports.File({ filename: "combined.log" }),
+ 
+    // new winston.transports.File({ filename: "error.log", level: "error" }),
+    // new winston.transports.File({ filename: "combined.log" }),
   ],
 });
