@@ -13,7 +13,7 @@ export const validate = (schema: ZodSchema<any>, source: "body" | "query" | "par
       return next(new AppError(message, HTTP_STATUS.BAD_REQUEST));
     }
     
-    // Replace the original data with validated data
+    // Replace the original data with validated data    
     if (source === "body") req.body = result.data;
     else if (source === "query") req.query = result.data;
     else req.params = result.data;

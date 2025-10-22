@@ -23,8 +23,8 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         if (!userSession) return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
         req.user = userSession.user;
         return next();
-      } catch (err: any) {
-        // fall through to refresh flow only if token expired
+      } catch (error: any) {
+        return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
       }
     }
 

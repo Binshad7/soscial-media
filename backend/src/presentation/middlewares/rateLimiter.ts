@@ -2,8 +2,9 @@ import rateLimit from 'express-rate-limit';
 import { Request, Response } from 'express';
 import { RateLimitExceeded } from '../helpers/errors';
 import { logger } from '../../shared/helpers/loger';
+import { success } from 'zod';
 
-// General rate limiter
+
 export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -24,15 +25,15 @@ export const generalLimiter = rateLimit({
 
 // Strict rate limiter for auth endpoints
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 5,
   message: {
     success: false,
     message: 'Too many authentication attempts, please try again later.'
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skipSuccessfulRequests: true, // Don't count successful requests
+  skipSuccessfulRequests: true, // Don't count successful requests withc means it not count  200 and 300 status messages
   handler: (req: Request, res: Response) => {
     logger.warn(`Auth rate limit exceeded for IP: ${req.ip}, Path: ${req.path}`);
     res.status(429).json({
@@ -44,8 +45,8 @@ export const authLimiter = rateLimit({
 
 // Password reset rate limiter
 export const passwordResetLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // limit each IP to 3 password reset requests per hour
+  windowMs: 60 * 60 * 1000,
+  max: 3,
   message: {
     success: false,
     message: 'Too many password reset attempts, please try again later.'
@@ -63,8 +64,8 @@ export const passwordResetLimiter = rateLimit({
 
 // Follow request rate limiter
 export const followRequestLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 10, // limit each IP to 10 follow requests per minute
+  windowMs: 60 * 1000,
+  max: 10,
   message: {
     success: false,
     message: 'Too many follow requests, please slow down.'
@@ -79,3 +80,20 @@ export const followRequestLimiter = rateLimit({
     });
   }
 });
+
+// const demoHandle = rateLimit({
+//   windowMs: 30 * 60 * 1000,
+//   max: 10,
+//   message: {
+//     success: false,
+//     message: "poda ith demo anu"
+//   },
+//   standardHeaders: true,
+//   legacyHeaders: false,
+//   skipSuccessfulRequests: true,
+//   skipFailedRequests: false,
+
+//   handler: (req: Request, res: Response) => {
+//     res.status(488).send()
+//   }
+// })

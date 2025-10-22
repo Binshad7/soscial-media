@@ -15,7 +15,7 @@ export class UserController {
 
     register = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { username, email, accessToken, refreshToken, message } = await this.registerUser.execute(req.body);
+            const { username, email, accessToken, refreshToken } = await this.registerUser.execute(req.body);
             setAuthCookie(res, accessToken, refreshToken);
             logger.info(`Registration successful for user: ${username}`, { requestId: req.requestId });
             return registerSuccess(res, { username, email }, { accessToken, refreshToken });
@@ -27,7 +27,7 @@ export class UserController {
 
     login = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { username, email, accessToken, refreshToken, message } = await this.loginUser.execute(req.body.email, req.body.password);
+            const { username, email, accessToken, refreshToken } = await this.loginUser.execute(req.body.email, req.body.password);
             setAuthCookie(res, accessToken, refreshToken);
             logger.info(`Login successful for user: ${username}`, { requestId: req.requestId });
             return authSuccess(res, { username, email });

@@ -66,7 +66,7 @@ export const loginSuccess = (res: Response, user: any, tokens: { accessToken: st
   }, "Login successful");
 };
 
-export const registerSuccess = (res: Response, user: any, tokens: { accessToken: string; refreshToken: string }) => {
+export const  registerSuccess = (res: Response, user: any, tokens: { accessToken: string; refreshToken: string }) => {
   return created(res, {
     user: {
       id: user._id,
