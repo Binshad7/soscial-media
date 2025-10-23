@@ -3,7 +3,7 @@ import { redisClient } from "./redis.Client";
 
 export const storeUserSession = async (
     redisKey: string,
-    _id: string,
+    _id: string | undefined,
     refreshToken: string,
     username: string,
     email: string

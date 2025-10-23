@@ -1,6 +1,6 @@
 import { AppError } from "../../domain/errors/AppError";
 import { HTTP_STATUS } from "../../constants/StatusCodes";
-import { COMMON_MESSAGE, USER_MESSAGE } from "../../constants/messages/ResponseMessages";
+import { COMMON_MESSAGE, FOLLOW_MESSAGE, USER_MESSAGE } from "../../constants/messages/ResponseMessages";
 export const BadRequest = (message: string) => new AppError(message, HTTP_STATUS.BAD_REQUEST);
 export const Unauthorized = (message?: string) => new AppError(message || USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED);
 export const Forbidden = (message?: string) => new AppError(message || USER_MESSAGE.LOGIN.FORBIDDEN, HTTP_STATUS.FORBIDDEN);
@@ -21,19 +21,19 @@ export const TokenInvalid = () => Unauthorized("Invalid token");
 export const SessionExpired = () => Unauthorized("Session has expired");
 
 // Common business logic errors
-export const UserNotFound = (id?: string) => NotFound(id ? `User with ID ${id} not found` : "User not found");
-export const EmailAlreadyExists = () => Conflict("Email already exists");
-export const UsernameAlreadyExists = () => Conflict("Username already exists");
-export const CannotFollowSelf = () => BadRequest("Cannot send follow request to yourself");
+export const UserNotFound = (id?: string) => NotFound(FOLLOW_MESSAGE.REQUEST.RECEIVER_NOT_FOUND);
+export const EmailAlreadyExists = () => Conflict(USER_MESSAGE.REGISTER.USER_ALREADY_EXISTS);
+export const CannotFollowSelf = () => BadRequest(FOLLOW_MESSAGE.REQUEST.SELF_FOLLOW);
+export const FollowRequestFaild = () => BadRequest(FOLLOW_MESSAGE.REQUEST.SEND_FAILED);
 export const AlreadyFollowing = () => Conflict(USER_MESSAGE.REGISTER.USER_ALREADY_EXISTS);
-export const FollowRequestAlreadySent = () => Conflict("Follow request already sent");
-export const FollowRequestNotFound = () => NotFound("Follow request not found");
+export const FollowRequestAlreadySent = () => Conflict(FOLLOW_MESSAGE.REQUEST.ALREADY_SENT);
+export const AccepttFollowRequestFail = () => BadRequest(FOLLOW_MESSAGE.ACCEPT.FAILED)
 
 // Rate limiting errors
 export const RateLimitExceeded = (retryAfter?: number) => {
   const error = TooManyRequests("Too many requests, please try again later");
   if (retryAfter) {
-    error.retryAfter = retryAfter;
+    (error as any).retryAfter = retryAfter;
   }
   return error;
 };

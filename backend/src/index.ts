@@ -10,7 +10,10 @@ import userRoutes from "./presentation/routes/userRoutes";
 import chatRoutes from "./presentation/routes/chatRoutes";
 import groupRoutes from "./presentation/routes/groupRoutes";
 import videoCallRoutes from "./presentation/routes/videoCallRoutes";
+
+// AuthMiddleware
 import { authMiddleware } from "./presentation/middlewares/authMiddleware";
+// ErrorHandler middleware
 import { errorHandler } from "./presentation/middlewares/errorHandler";
 
 // Security and utility middleware
@@ -23,7 +26,7 @@ import { logger } from './shared/helpers/loger';
 
 const app = express();
 
-// cors
+// Cors
 const allowedOrigins = (ENV.FRONTEND_ORIGINS ?? ENV.FRONTEND_URL ?? "")
     .split(",")
     .map(o => o.trim())
@@ -40,6 +43,7 @@ const corsOptions = {
     allowedHeaders: ["Content-Type", "Authorization"],
     optionsSuccessStatus: 200
 }
+// app.set('trust proxy', true); for production to get actual ip adress
 
 // Security middleware (order matters!)
 app.use(securityHeaders);
