@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import {  ZodSchema } from "zod";
+import { ZodSchema } from "zod";
 import { AppError } from "../../domain/errors/AppError";
 import { HTTP_STATUS } from "../../constants/StatusCodes";
 

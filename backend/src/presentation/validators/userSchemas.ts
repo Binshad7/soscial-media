@@ -27,7 +27,7 @@ export const loginSchema = z.object({
 });
 
 export const sendFollowRequestSchema = z.object({
-  reciverID: z.string()
+  receiverId: z.string()
     .regex(/^[a-f\d]{24}$/i, "Invalid user ID format")
     .min(24, "Invalid user ID length")
     .max(24, "Invalid user ID length")

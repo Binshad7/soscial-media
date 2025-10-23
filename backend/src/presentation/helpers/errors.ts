@@ -21,19 +21,19 @@ export const TokenInvalid = () => Unauthorized("Invalid token");
 export const SessionExpired = () => Unauthorized("Session has expired");
 
 // Common business logic errors
-export const UserNotFound = (id?: string) => NotFound(id ? `User with ID ${id} not found` : "User not found");
+export const UserNotFound = (id?: string) => NotFound(FOLLOW_MESSAGE.REQUEST.RECEIVER_NOT_FOUND);
 export const EmailAlreadyExists = () => Conflict(USER_MESSAGE.REGISTER.USER_ALREADY_EXISTS);
 export const CannotFollowSelf = () => BadRequest(FOLLOW_MESSAGE.REQUEST.SELF_FOLLOW);
 export const FollowRequestFaild = () => BadRequest(FOLLOW_MESSAGE.REQUEST.SEND_FAILED);
 export const AlreadyFollowing = () => Conflict(USER_MESSAGE.REGISTER.USER_ALREADY_EXISTS);
 export const FollowRequestAlreadySent = () => Conflict(FOLLOW_MESSAGE.REQUEST.ALREADY_SENT);
-export const FollowRequestNotFound = () => NotFound(FOLLOW_MESSAGE.REQUEST.RECEIVER_NOT_FOUND);
+export const AccepttFollowRequestFail = () => BadRequest(FOLLOW_MESSAGE.ACCEPT.FAILED)
 
 // Rate limiting errors
 export const RateLimitExceeded = (retryAfter?: number) => {
   const error = TooManyRequests("Too many requests, please try again later");
   if (retryAfter) {
-    // error.retryAfter = retryAfter;  //>small bug is here
+    (error as any).retryAfter = retryAfter;
   }
   return error;
 };

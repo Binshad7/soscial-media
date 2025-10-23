@@ -12,15 +12,9 @@ router.post("/register", authLimiter, validate(registerSchema), userController.r
 router.post("/login", authLimiter, validate(loginSchema), userController.login);
 
 // Protected routes
-router.patch('/sendRequest/:reciverID', 
-  authMiddleware, 
-  followRequestLimiter, 
-  validate(sendFollowRequestSchema, "params"), 
-  userController.sendFollowRequest
-);
-// router.patch('/acceptRequest/:userId', authMiddleware, (req, res) => { });
-// router.get('/getRequests', authMiddleware, (req, res) => { });
-// router.get('/getFriends', authMiddleware, (req, res) => { });
-// router.get('/searchUsers', authMiddleware, (req, res) => { });
+router.patch('/sendRequest/:receiverId', authMiddleware, followRequestLimiter, validate(sendFollowRequestSchema, "params"), userController.sendFollowRequest);
+router.patch('/acceptRequest/:receiverId', authMiddleware, validate(sendFollowRequestSchema, "params"), userController.acceptFollowRequest);
+router.patch('/rejectRequest/:receiverId', authMiddleware, validate(sendFollowRequestSchema, "params"), userController.rejectFollowRequest);
+
 
 export default router;

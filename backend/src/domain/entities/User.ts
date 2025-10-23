@@ -3,7 +3,7 @@ export interface IUser {
     username: string;
     email: string;
     password: string;
-    confirm_password: string;
+    confirm_password?: string;
     status?: 'online' | 'offline' | 'busy';
     followers?: string[];
     following?: string[];
@@ -25,7 +25,7 @@ export interface StoreUser {
 }
 
 export interface sessionUser {
-    _id: string,
+    _id: string | undefined,
     username: string,
     email: string
 }
