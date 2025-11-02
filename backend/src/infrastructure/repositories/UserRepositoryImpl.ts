@@ -33,7 +33,7 @@ export class UserRepository extends BaseRepository implements IUserRepository {
   async addUserRelations(senderId: string, receiverId: string, receiverField: string, senderField: string): Promise<{ receiverUpdateResult: any, senderUpdateResult: any }> {
     return this.execute(async () => {
       const session = await mongoose.startSession();
-      await session.startTransaction();
+       session.startTransaction();
       
       try {
         const receiverUpdateResult = await UserModel.updateOne(
@@ -46,6 +46,8 @@ export class UserRepository extends BaseRepository implements IUserRepository {
           { _id: senderId, [senderField]: { $ne: receiverId } },
           { $addToSet: { [senderField]: receiverId } },
           { session }
+
+
         );
 
         await session.commitTransaction();
@@ -62,7 +64,7 @@ export class UserRepository extends BaseRepository implements IUserRepository {
   async removeFromUserRelations(senderID: string, receiverID: string, friendRequests: string, sentRequests: string): Promise<{ receiverRemoveResult: any, senderRemoveResult: any }> {
     return this.execute(async () => {
       const session = await mongoose.startSession();
-      await session.startTransaction();
+       session.startTransaction();
       
       try {
         const receiverRemoveResult = await UserModel.updateOne(

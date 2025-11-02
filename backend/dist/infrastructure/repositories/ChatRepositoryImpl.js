@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatRepository = void 0;
-const ChatModel_1 = __importDefault(require("../db/mongoose/ChatModel"));
+const ChatModel_1 = __importDefault(require("../db/mongoose/models/ChatModel"));
 class ChatRepository {
     async addMessage(chatId, message) {
         return ChatModel_1.default.findByIdAndUpdate(chatId, { $push: { messages: message } }, { new: true });

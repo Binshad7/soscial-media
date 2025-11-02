@@ -13,30 +13,29 @@ export abstract class BaseRepository {
   }
 
   private logError(error: any): void {
-    logger.error('Repository operation failed', { 
+    logger.error('Repository operation failed', {
       error: error.message,
-      stack: error.stack 
+      stack: error.stack
     });
   }
 
   private transformError(error: any): AppError {
-    // Handle MongoDB duplicate key error
-    if (error.code === 11000) {
+    if (error.code === 11000) {   // Handle MongoDB duplicate key error
       const field = Object.keys(error.keyPattern)[0];
       return Conflict(`${field} already exists`);
     }
-    
-    // Handle MongoDB validation errors
-    if (error.name === 'ValidationError') {
+
+
+    if (error.name === 'ValidationError') {// Handle MongoDB validation errors
       const messages = Object.values(error.errors).map((err: any) => err.message);
       return new AppError(`Validation failed: ${messages.join(', ')}`, 400);
     }
-    
-    // Handle MongoDB cast errors
-    if (error.name === 'CastError') {
+
+
+    if (error.name === 'CastError') {  // Handle MongoDB cast errors
       return new AppError(`Invalid ${error.path}: ${error.value}`, 400);
     }
-    
+
     // Default to internal server error
     return InternalServerError('Database operation failed');
   }

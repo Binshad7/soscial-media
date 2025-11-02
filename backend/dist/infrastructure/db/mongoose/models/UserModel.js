@@ -38,8 +38,6 @@ const UserSchema = new mongoose_1.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    displayName: { type: String },
-    bio: { type: String },
     status: { type: String, enum: ['online', 'offline', 'busy'], default: 'offline' },
     followers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
     following: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
@@ -49,26 +47,26 @@ const UserSchema = new mongoose_1.Schema({
     lastSeen: { type: Date, default: Date.now }
 }, { timestamps: true });
 exports.default = mongoose_1.default.model("User", UserSchema);
-const MessageSchema = new mongoose_1.Schema({
-    sender: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
-    content: { type: String, required: true },
-    chat: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Chat', required: true },
-    timestamp: { type: Date, default: Date.now }
-});
-const ChatSchema = new mongoose_1.Schema({
-    isGroupChat: { type: Boolean, default: false },
-    participants: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
-    groupName: { type: String },
-    groupAvatar: { type: String },
-    messages: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Message' }]
-}, { timestamps: true });
-const CallSchema = new mongoose_1.Schema({
-    caller: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
-    receiver: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
-    type: { type: String, enum: ['audio', 'video'], required: true },
-    status: { type: String, enum: ['initiated', 'accepted', 'declined', 'ended'], default: 'initiated' },
-    startedAt: { type: Date },
-    endedAt: { type: Date },
-    isGroupCall: { type: Boolean, default: false },
-    groupId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Group' }
-}, { timestamps: true });
+// const MessageSchema = new Schema({
+//   sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+//   content: { type: String, required: true },
+//   chat: { type: Schema.Types.ObjectId, ref: 'Chat', required: true },
+//   timestamp: { type: Date, default: Date.now }
+// });
+// const ChatSchema = new Schema({
+//   isGroupChat: { type: Boolean, default: false },
+//   participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+//   groupName: { type: String },
+//   groupAvatar: { type: String },
+//   messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }]
+// }, { timestamps: true });
+// const CallSchema = new Schema({
+//   caller: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+//   receiver: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+//   type: { type: String, enum: ['audio', 'video'], required: true },
+//   status: { type: String, enum: ['initiated', 'accepted', 'declined', 'ended'], default: 'initiated' },
+//   startedAt: { type: Date },
+//   endedAt: { type: Date },
+//   isGroupCall: { type: Boolean, default: false },
+//   groupId: { type: Schema.Types.ObjectId, ref: 'Group' }
+// }, { timestamps: true });

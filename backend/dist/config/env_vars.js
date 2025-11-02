@@ -9,7 +9,9 @@ dotenv_1.default.config();
 exports.ENV = {
     MONGO_URL: process.env.MONGO_URL,
     PORT: process.env.PORT || 5000,
-    FRONTENT_URL: process.env.FRONTENT_URL,
+    FRONTEND_URL: process.env.FRONTEND_URL,
     JWT_SECRET: process.env.JWT_SECRET,
-    NODE_ENV: process.env.NODE_ENV
+    NODE_ENV: process.env.NODE_ENV,
+    FRONTEND_ORIGINS: process.env.FRONTEND_ORIGINS,
+    COOKIE_SAMESITE: process.env.COOKIE_SAMESITE
 };

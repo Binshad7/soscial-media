@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VideoCallRepository = void 0;
-const VideoCallModel_1 = __importDefault(require("../db/mongoose/VideoCallModel"));
+const VideoCallModel_1 = __importDefault(require("../db/mongoose/models/VideoCallModel"));
 class VideoCallRepository {
     async createCall(data) {
         return VideoCallModel_1.default.create(data);

@@ -1,20 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const UserRepositoryImpl_1 = require("../../infrastructure/repositories/UserRepositoryImpl");
-const UserController_1 = require("../controllers/UserController");
-const RegisterUser_1 = require("../../application/usecases/user/RegisterUser");
-const LoginUser_1 = require("../../application/usecases/user/LoginUser");
+const container_1 = require("../container");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const validate_1 = require("../middlewares/validate");
+const rateLimiter_1 = require("../middlewares/rateLimiter");
+const userSchemas_1 = require("../validators/userSchemas");
 const router = (0, express_1.Router)();
-const userRepository = new UserRepositoryImpl_1.UserRepository(); // mongodb layer all db opretion in side of that
-const registerUser = new RegisterUser_1.RegisterUser(userRepository);
-const loginUser = new LoginUser_1.LoginUser(userRepository);
-const userController = new UserController_1.UserController(registerUser, loginUser);
-router.post("/register", userController.register);
-router.post("/login", userController.login);
-// router.patch('/sendRequest/:userId', authMiddleware, (req, res) => { });
-// router.patch('/acceptRequest/:userId', authMiddleware, (req, res) => { });
-// router.get('/getRequests', authMiddleware, (req, res) => { });
-// router.get('/getFriends', authMiddleware, (req, res) => { });
-// router.get('/searchUsers', authMiddleware, (req, res) => { });
+// Auth routes with rate limiting and validation
+router.post("/register", rateLimiter_1.authLimiter, (0, validate_1.validate)(userSchemas_1.registerSchema), container_1.userController.register);
+router.post("/login", rateLimiter_1.authLimiter, (0, validate_1.validate)(userSchemas_1.loginSchema), container_1.userController.login);
+// Protected routes
+router.patch('/sendRequest/:receiverId', authMiddleware_1.authMiddleware, rateLimiter_1.followRequestLimiter, (0, validate_1.validate)(userSchemas_1.sendFollowRequestSchema, "params"), container_1.userController.sendFollowRequest);
+router.patch('/acceptRequest/:receiverId', authMiddleware_1.authMiddleware, (0, validate_1.validate)(userSchemas_1.sendFollowRequestSchema, "params"), container_1.userController.acceptFollowRequest);
+router.patch('/rejectRequest/:receiverId', authMiddleware_1.authMiddleware, (0, validate_1.validate)(userSchemas_1.sendFollowRequestSchema, "params"), container_1.userController.rejectFollowRequest);
 exports.default = router;

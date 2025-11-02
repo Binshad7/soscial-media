@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GroupRepository = void 0;
-const GroupModel_1 = __importDefault(require("../db/mongoose/GroupModel"));
+const GroupModel_1 = __importDefault(require("../db/mongoose/models/GroupModel"));
 class GroupRepository {
     async createGroup(group) {
         return GroupModel_1.default.create(group);

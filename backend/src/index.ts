@@ -3,7 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 
-import { connectDB } from './infrastructure/db/mongoose/connectDB';  // db connection
+import { connectDB } from './infrastructure/db/mongoose/connectDB';  // db connection   
 import { connectRedis } from './infrastructure/services/redis/redis.Client'; // redis client connection
 
 import userRoutes from "./presentation/routes/userRoutes";
