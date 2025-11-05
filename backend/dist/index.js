@@ -19,43 +19,24 @@ const authMiddleware_1 = require("./presentation/middlewares/authMiddleware");
 const errorHandler_1 = require("./presentation/middlewares/errorHandler");
 // Security and utility middleware
 const security_1 = require("./presentation/middlewares/security");
-const requestId_1 = require("./presentation/middlewares/requestId");
 const rateLimiter_1 = require("./presentation/middlewares/rateLimiter");
 const env_vars_1 = require("./config/env_vars"); // env var
 const loger_1 = require("./shared/helpers/loger");
 const app = (0, express_1.default)();
-// Cors
-const allowedOrigins = (env_vars_1.ENV.FRONTEND_ORIGINS ?? env_vars_1.ENV.FRONTEND_URL ?? "")
-    .split(",")
-    .map(o => o.trim())
-    .filter(Boolean);
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (!origin)
-            return callback(null, true);
-        if (allowedOrigins.includes(origin))
-            return callback(null, true);
-        return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    optionsSuccessStatus: 200
-};
 // app.set('trust proxy', true); for production to get actual ip adress
+// CORS and parsing middleware
+app.use((0, cors_1.default)(security_1.corsOptions));
 // Security middleware (order matters!)
 app.use(security_1.securityHeaders);
-app.use(security_1.mongoSanitization);
-app.use(security_1.xssProtection);
+// app.use(mongoSanitization);
+// // app.use(xssProtection);
 app.use(security_1.requestSizeLimiter);
-app.use(requestId_1.requestId);
-// CORS and parsing middleware
-app.use((0, cors_1.default)(corsOptions));
+// app.use(requestId);
 app.use((0, cookie_parser_1.default)()); // to access data from cookie and session
 app.use(express_1.default.json({ limit: '10mb' }));
 app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
 // Logging
-app.use((0, morgan_1.default)('combined', {
+app.use((0, morgan_1.default)('dev', {
     stream: {
         write: (message) => loger_1.logger.info(message.trim())
     }

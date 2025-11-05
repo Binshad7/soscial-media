@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
+    "watch": "tsc --watch",
     "start": "node dist/index.js",
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts"
+    "dev": "concurrently \"tsc --watch\" \"nodemon dist/index.js\""
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.5.2",
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
@@ -43,4 +45,5 @@
     "winston": "^3.18.3",
     "zod": "^4.1.12"
   }
+  
 }

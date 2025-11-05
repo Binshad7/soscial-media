@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const router = useRouter()
   const { user } = useAuth()
-  console.log(user)
   useEffect(() => {
     if (!user) {
       router.push('/login')

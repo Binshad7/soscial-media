@@ -1,19 +1,18 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../domain/errors/AppError";
 import { COMMON_MESSAGE } from "../../constants/messages/ResponseMessages";
 import { HTTP_STATUS } from "../../constants/StatusCodes";
 import { logger } from "../../shared/helpers/loger";
+import { errorResponse } from "../helpers/response";
 export const errorHandler = (
     err: Error,
     req: Request,
-    res: Response
+    res: Response,
+    next: NextFunction
 ) => {
     if (err instanceof AppError) {
-        return res.status(err.statusCode).json({
-            error: err.message
-        });
+        return errorResponse(res, err.message, err.statusCode)
     }
-
     logger.error("Unhandled error:", err);
-    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: COMMON_MESSAGE.SERVER_ERROR });
+    errorResponse(res, COMMON_MESSAGE.SERVER_ERROR, HTTP_STATUS.INTERNAL_SERVER_ERROR)
 };

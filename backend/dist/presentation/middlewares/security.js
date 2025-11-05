@@ -3,10 +3,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xssProtection = exports.ipWhitelist = exports.requestSizeLimiter = exports.mongoSanitization = exports.securityHeaders = void 0;
+exports.xssProtection = exports.ipWhitelist = exports.requestSizeLimiter = exports.mongoSanitization = exports.securityHeaders = exports.corsOptions = exports.allowedOrigins = void 0;
 const helmet_1 = __importDefault(require("helmet"));
 const express_mongo_sanitize_1 = __importDefault(require("express-mongo-sanitize"));
 const loger_1 = require("../../shared/helpers/loger");
+const env_vars_1 = require("../../config/env_vars");
+exports.allowedOrigins = (env_vars_1.ENV.FRONTEND_ORIGINS ?? env_vars_1.ENV.FRONTEND_URL ?? "")
+    .split(",")
+    .map(o => o.trim())
+    .filter(Boolean);
+exports.corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin)
+            return callback(null, true);
+        if (exports.allowedOrigins.includes(origin))
+            return callback(null, true);
+        return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    optionsSuccessStatus: 200
+};
 // Security headers middleware
 exports.securityHeaders = (0, helmet_1.default)({
     contentSecurityPolicy: {
@@ -62,14 +80,13 @@ const ipWhitelist = (allowedIPs) => {
 exports.ipWhitelist = ipWhitelist;
 // XSS protection middleware
 const xssProtection = (req, res, next) => {
-    // Remove any script tags or dangerous HTML
     const sanitizeInput = (obj) => {
         if (typeof obj === 'string') {
             return obj
-                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') //<script> tags (inline JS)
-                .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '') //<iframe> tags (used for phishing)
-                .replace(/javascript:/gi, '') //javascript: URLs
-                .replace(/on\w+\s*=/gi, ''); //onClick=, onMouseOver= (JS event attributes)
+                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+                .replace(/javascript:/gi, '')
+                .replace(/on\w+\s*=/gi, '');
         }
         if (typeof obj === 'object' && obj !== null) {
             for (const key in obj) {
@@ -79,8 +96,11 @@ const xssProtection = (req, res, next) => {
         return obj;
     };
     req.body = sanitizeInput(req.body);
-    req.query = sanitizeInput(req.query);
-    req.params = sanitizeInput(req.params);
+    // ✅ mutate instead of reassign
+    if (req.query)
+        sanitizeInput(req.query);
+    if (req.params)
+        sanitizeInput(req.params);
     next();
 };
 exports.xssProtection = xssProtection;

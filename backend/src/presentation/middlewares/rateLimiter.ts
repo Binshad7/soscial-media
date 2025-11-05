@@ -1,8 +1,6 @@
 import rateLimit from 'express-rate-limit';
 import { Request, Response } from 'express';
-import { RateLimitExceeded } from '../helpers/errors';
 import { logger } from '../../shared/helpers/loger';
-import { success } from 'zod';
 
 
 export const generalLimiter = rateLimit({
@@ -18,7 +16,7 @@ export const generalLimiter = rateLimit({
     logger.warn(`Rate limit exceeded for IP: ${req.ip}`);
     res.status(429).json({
       success: false,
-      message: 'Too many requests from this IP, please try again later.'
+      error: 'Too many requests from this IP, please try again later.'
     });
   }
 });
@@ -38,7 +36,7 @@ export const authLimiter = rateLimit({
     logger.warn(`Auth rate limit exceeded for IP: ${req.ip}, Path: ${req.path}`);
     res.status(429).json({
       success: false,
-      message: 'Too many authentication attempts, please try again later.'
+      error: 'Too many authentication attempts, please try again later.'
     });
   }
 });
@@ -57,7 +55,7 @@ export const passwordResetLimiter = rateLimit({
     logger.warn(`Password reset rate limit exceeded for IP: ${req.ip}`);
     res.status(429).json({
       success: false,
-      message: 'Too many password reset attempts, please try again later.'
+      error: 'Too many password reset attempts, please try again later.'
     });
   }
 });
@@ -76,24 +74,7 @@ export const followRequestLimiter = rateLimit({
     logger.warn(`Follow request rate limit exceeded for IP: ${req.ip}`);
     res.status(429).json({
       success: false,
-      message: 'Too many follow requests, please slow down.'
+      error: 'Too many follow requests, please slow down.'
     });
   }
 });
-
-// const demoHandle = rateLimit({
-//   windowMs: 30 * 60 * 1000,
-//   max: 10,
-//   message: {
-//     success: false,
-//     message: "poda ith demo anu"
-//   },
-//   standardHeaders: true,
-//   legacyHeaders: false,
-//   skipSuccessfulRequests: true,
-//   skipFailedRequests: false,
-
-//   handler: (req: Request, res: Response) => {
-//     res.status(488).send()
-//   }
-// })

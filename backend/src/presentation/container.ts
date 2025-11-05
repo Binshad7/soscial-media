@@ -12,7 +12,7 @@ import { LoginUser } from "../application/usecases/user/LoginUser";
 
 import { AccepttFollowRequest } from "../application/usecases/user/AcceptFollowRequest";
 import { RejectFollowRequest } from "../application/usecases/user/RejectFollowRequest";
-import { SendFollowRequest } from "../application/usecases/user/SendFollowRequest";
+import { sendFollowRequest } from "../application/usecases/user/SendFollowRequest";
 // messages
 import { SendMessage } from "../application/usecases/chat/SendMessage";
 import { CreateGroup } from "../application/usecases/group/CreateGroup";
@@ -32,7 +32,7 @@ const videoCallRepository = new VideoCallRepository();
 // Usecases
 const registerUser = new RegisterUser(userRepository);
 const loginUser = new LoginUser(userRepository);
-const sendFollowReq = new SendFollowRequest(userRepository);
+const sendFollowReq = new sendFollowRequest(userRepository);
 const acceptFollowReq = new AccepttFollowRequest(userRepository);
 const rejectFollowReq = new RejectFollowRequest(userRepository);
 const sendMessage = new SendMessage(chatRepository);

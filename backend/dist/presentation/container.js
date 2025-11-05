@@ -11,9 +11,9 @@ const VideoCallRepositoryImpl_1 = require("../infrastructure/repositories/VideoC
 const RegisterUser_1 = require("../application/usecases/user/RegisterUser");
 const LoginUser_1 = require("../application/usecases/user/LoginUser");
 // Follow
-const SendFollowRequest_1 = require("../application/usecases/user/SendFollowRequest");
 const AcceptFollowRequest_1 = require("../application/usecases/user/AcceptFollowRequest");
 const RejectFollowRequest_1 = require("../application/usecases/user/RejectFollowRequest");
+const SendFollowRequest_1 = require("../application/usecases/user/SendFollowRequest");
 // messages
 const SendMessage_1 = require("../application/usecases/chat/SendMessage");
 const CreateGroup_1 = require("../application/usecases/group/CreateGroup");
@@ -31,7 +31,7 @@ const videoCallRepository = new VideoCallRepositoryImpl_1.VideoCallRepository();
 // Usecases
 const registerUser = new RegisterUser_1.RegisterUser(userRepository);
 const loginUser = new LoginUser_1.LoginUser(userRepository);
-const sendFollowReq = new SendFollowRequest_1.SendFollowRequest(userRepository);
+const sendFollowReq = new SendFollowRequest_1.sendFollowRequest(userRepository);
 const acceptFollowReq = new AcceptFollowRequest_1.AccepttFollowRequest(userRepository);
 const rejectFollowReq = new RejectFollowRequest_1.RejectFollowRequest(userRepository);
 const sendMessage = new SendMessage_1.SendMessage(chatRepository);
@@ -42,19 +42,3 @@ exports.userController = new UserController_1.UserController(registerUser, login
 exports.chatController = new ChatController_1.ChatController(sendMessage);
 exports.groupController = new GroupController_1.GroupController(createGroup);
 exports.videoCallController = new VideoCallController_1.VideoCallController(startVideoCall);
-// Export repositories for testing
-// export const repositories = {
-//   userRepository,
-//   chatRepository,
-//   groupRepository,
-//   videoCallRepository
-// };
-// // Export usecases for testing
-// export const usecases = {
-//   registerUser,
-//   loginUser,
-//   sendFollowReq,
-//   sendMessage,
-//   createGroup,
-//   startVideoCall
-// };

@@ -9,7 +9,7 @@ export const registerSchema = z.object({
     .email("Invalid email format")
     .max(255, "Email must be at most 255 characters"),
   password: z.string()
-    .min(8, "Password must be at least 8 characters")
+    .min(6, "Password must be at least 8 characters")
     .max(128, "Password must be at most 128 characters")
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain at least one lowercase letter, one uppercase letter, and one number"), 
     confirm_password: z.string({})
@@ -24,7 +24,7 @@ export const loginSchema = z.object({
   password: z.string()
     .min(1, "Password is required")
     .max(128, "Password must be at most 128 characters")
-});
+}); 
 
 export const sendFollowRequestSchema = z.object({
   receiverId: z.string()

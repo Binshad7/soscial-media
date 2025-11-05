@@ -11,14 +11,10 @@ class RegisterUser {
     }
     async execute(userData) {
         try {
+            console.log('eee ');
             const checkExistEmail = await this.userRepository.findByEmail(userData.email);
             if (checkExistEmail)
                 throw (0, errors_1.EmailAlreadyExists)();
-            // create new user
-            // Validate password confirmation
-            if (userData.password !== userData.confirm_password) {
-                throw (0, errors_1.BadRequest)('Passwords do not match');
-            }
             const hashedPassword = await (0, passwordHelpers_1.hashPassword)(userData.password);
             userData.password = hashedPassword;
             const { confirm_password, ...user } = userData;

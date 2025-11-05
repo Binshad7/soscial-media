@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SendFollowRequest = void 0;
+exports.sendFollowRequest = void 0;
 const ResponseMessages_1 = require("../../../constants/messages/ResponseMessages");
 const errors_1 = require("../../../presentation/helpers/errors");
 const loger_1 = require("../../../shared/helpers/loger");
 const fieldNames_1 = require("../../../constants/fieldNames");
-class SendFollowRequest {
+class sendFollowRequest {
     constructor(userReposatry) {
         this.userReposatry = userReposatry;
     }
@@ -36,4 +36,4 @@ class SendFollowRequest {
         }
     }
 }
-exports.SendFollowRequest = SendFollowRequest;
+exports.sendFollowRequest = sendFollowRequest;

@@ -39,10 +39,14 @@ export default function RegisterPage() {
         try {
             const newUser = await register(payload);
             loginUser(newUser)
-            toast.success(MESSAGES.REGISTER_SUCCESS)
+            toast.success(newUser.message)
             router.push('/')
         } catch (err: any) {
-            toast.error(err.response.data.error)
+            console.log(err);
+
+            console.log('e1', err.response.data.error);
+
+            toast.error(err?.response?.data?.error)
             setError('Registration failed');
         }
     };

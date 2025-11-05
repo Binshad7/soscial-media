@@ -6,7 +6,7 @@ import { sendFollowRequest } from "../../application/usecases/user/SendFollowReq
 import { AccepttFollowRequest } from "../../application/usecases/user/AcceptFollowRequest";
 import { RejectFollowRequest } from "../../application/usecases/user/RejectFollowRequest";
 import { logger } from "../../shared/helpers/loger";
-import { authSuccess, registerSuccess, success } from "../helpers/response";
+import { authSuccess, loginSuccess, registerSuccess, success } from "../helpers/response";
 
 export class UserController {
     constructor(
@@ -20,10 +20,11 @@ export class UserController {
 
     register = async (req: Request, res: Response, next: NextFunction) => {
         try {
+            console.log('end point reach here ')
             const { username, email, accessToken, refreshToken } = await this.registerUser.execute(req.body);
             setAuthCookie(res, accessToken, refreshToken);
             logger.info(`Registration successful for user: ${username}`, { requestId: req.requestId });
-            return registerSuccess(res, { username, email }, { accessToken, refreshToken });
+            return registerSuccess(res, { username, email });
         } catch (error: any) {
             logger.error(`Registration failed: ${error.message}`, { requestId: req.requestId });
             next(error);
@@ -35,7 +36,7 @@ export class UserController {
             const { username, email, accessToken, refreshToken } = await this.loginUser.execute(req.body.email, req.body.password);
             setAuthCookie(res, accessToken, refreshToken);
             logger.info(`Login successful for user: ${username}`, { requestId: req.requestId });
-            return authSuccess(res, { username, email });
+            return loginSuccess(res, { username, email });
         } catch (error: any) {
             logger.error(`Login failed: ${error.message}`, { requestId: req.requestId });
             next(error);

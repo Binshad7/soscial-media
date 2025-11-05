@@ -4,7 +4,7 @@ import { CannotFollowSelf, FollowRequestFaild, UserNotFound } from "../../../pre
 import { logger } from "../../../shared/helpers/loger";
 import { USER_FIELDS } from "../../../constants/fieldNames";
 
-export  class SendFollowRequest {
+export  class sendFollowRequest {
     constructor(private userReposatry: IUserRepository) { }
     async execute(senderID: string | undefined, receiverID: string) {
         try {

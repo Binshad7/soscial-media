@@ -41,9 +41,9 @@ export default function LoginPage() {
         };
 
         try {
-            const ExistUser = await login(payload);
-            loginUser(ExistUser);
-            toast.success(MESSAGES.LOGIN_SUCCESS);
+            const response = await login(payload);
+            loginUser(response);
+            toast.success(response.message);
             router.push('/')
         } catch (err) {
             toast.error(MESSAGES.LOGIN_FAILED);

@@ -13,10 +13,11 @@ class UserController {
         this.rejecttFollowReq = rejecttFollowReq;
         this.register = async (req, res, next) => {
             try {
+                console.log('end point reach here ');
                 const { username, email, accessToken, refreshToken } = await this.registerUser.execute(req.body);
                 (0, cookieHelper_1.setAuthCookie)(res, accessToken, refreshToken);
                 loger_1.logger.info(`Registration successful for user: ${username}`, { requestId: req.requestId });
-                return (0, response_1.registerSuccess)(res, { username, email }, { accessToken, refreshToken });
+                return (0, response_1.registerSuccess)(res, { username, email });
             }
             catch (error) {
                 loger_1.logger.error(`Registration failed: ${error.message}`, { requestId: req.requestId });
@@ -28,7 +29,7 @@ class UserController {
                 const { username, email, accessToken, refreshToken } = await this.loginUser.execute(req.body.email, req.body.password);
                 (0, cookieHelper_1.setAuthCookie)(res, accessToken, refreshToken);
                 loger_1.logger.info(`Login successful for user: ${username}`, { requestId: req.requestId });
-                return (0, response_1.authSuccess)(res, { username, email });
+                return (0, response_1.loginSuccess)(res, { username, email });
             }
             catch (error) {
                 loger_1.logger.error(`Login failed: ${error.message}`, { requestId: req.requestId });

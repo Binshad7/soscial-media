@@ -19,7 +19,7 @@ exports.generalLimiter = (0, express_rate_limit_1.default)({
         loger_1.logger.warn(`Rate limit exceeded for IP: ${req.ip}`);
         res.status(429).json({
             success: false,
-            message: 'Too many requests from this IP, please try again later.'
+            error: 'Too many requests from this IP, please try again later.'
         });
     }
 });
@@ -38,7 +38,7 @@ exports.authLimiter = (0, express_rate_limit_1.default)({
         loger_1.logger.warn(`Auth rate limit exceeded for IP: ${req.ip}, Path: ${req.path}`);
         res.status(429).json({
             success: false,
-            message: 'Too many authentication attempts, please try again later.'
+            error: 'Too many authentication attempts, please try again later.'
         });
     }
 });
@@ -56,7 +56,7 @@ exports.passwordResetLimiter = (0, express_rate_limit_1.default)({
         loger_1.logger.warn(`Password reset rate limit exceeded for IP: ${req.ip}`);
         res.status(429).json({
             success: false,
-            message: 'Too many password reset attempts, please try again later.'
+            error: 'Too many password reset attempts, please try again later.'
         });
     }
 });
@@ -74,22 +74,7 @@ exports.followRequestLimiter = (0, express_rate_limit_1.default)({
         loger_1.logger.warn(`Follow request rate limit exceeded for IP: ${req.ip}`);
         res.status(429).json({
             success: false,
-            message: 'Too many follow requests, please slow down.'
+            error: 'Too many follow requests, please slow down.'
         });
     }
 });
-// const demoHandle = rateLimit({
-//   windowMs: 30 * 60 * 1000,
-//   max: 10,
-//   message: {
-//     success: false,
-//     message: "poda ith demo anu"
-//   },
-//   standardHeaders: true,
-//   legacyHeaders: false,
-//   skipSuccessfulRequests: true,
-//   skipFailedRequests: false,
-//   handler: (req: Request, res: Response) => {
-//     res.status(488).send()
-//   }
-// })
