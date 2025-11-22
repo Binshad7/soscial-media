@@ -11,8 +11,10 @@ const router = Router();
 router.post("/register", authLimiter, validate(registerSchema), userController.register);
 router.post("/login", authLimiter, validate(loginSchema), userController.login);
 
-// Protected routes
-router.patch('/sendRequest/:receiverId', authMiddleware, followRequestLimiter, validate(sendFollowRequestSchema, "params"), userController.sendFollowRequest);
+// cookie validation 
+router.get('/auth/me',authMiddleware,userController.userValidCheck)
+    // Protected routes
+    router.patch('/sendRequest/:receiverId', authMiddleware, followRequestLimiter, validate(sendFollowRequestSchema, "params"), userController.sendFollowRequest);
 router.patch('/acceptRequest/:receiverId', authMiddleware, validate(sendFollowRequestSchema, "params"), userController.acceptFollowRequest);
 router.patch('/rejectRequest/:receiverId', authMiddleware, validate(sendFollowRequestSchema, "params"), userController.rejectFollowRequest);
 

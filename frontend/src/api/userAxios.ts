@@ -16,20 +16,18 @@ const userAxios = axios.create({
 userAxios.interceptors.response.use(
     response => response,
     error => {
-        console.log('error ', error)
-        console.log('error ', error?.response?.data?.message)
         const status = error?.response?.status;
         const message =
             error?.response?.data?.message || error?.message || "Something went wrong";
 
         if (status === 401) {
-            toast.error("Session expired. Please log in again.");
+            toast.error(error?.response?.data?.message || "Session expired. Please log in again.");
             router.push("/login");
         }
 
         // 🚫 Forbidden
         if (status === 403) {
-            toast.error("You don’t have permission to do that.");
+            toast.error(error?.response?.data?.message || "You don’t have permission to do that.");
         }
 
 

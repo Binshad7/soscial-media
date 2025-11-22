@@ -1,4 +1,4 @@
-import { UserSession } from "../../infrastructure/services/redis/types/UserSession";
+import { UserSession } from "../../shared/types/User";
 
 declare global {
   namespace Express {
@@ -8,4 +8,3 @@ declare global {
   }
 }
 
-// export { }

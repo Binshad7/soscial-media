@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorHandler = void 0;
-const AppError_1 = require("../../domain/errors/AppError");
+const AppError_1 = require("../../domain/Exceptions/AppError");
 const ResponseMessages_1 = require("../../constants/messages/ResponseMessages");
 const StatusCodes_1 = require("../../constants/StatusCodes");
 const loger_1 = require("../../shared/helpers/loger");

@@ -7,9 +7,9 @@ const cookieVariable_1 = require("../../constants/cookieVariable");
 const jsonWebTokenVerify_1 = require("../helpers/jsonWebTokenVerify");
 const cookieHelper_1 = require("../helpers/cookieHelper");
 const sessionStore_1 = require("../../infrastructure/services/redis/sessionStore");
-const AppError_1 = require("../../domain/errors/AppError");
+const AppError_1 = require("../../domain/Exceptions/AppError");
 const hashToken_1 = require("../../shared/helpers/hashToken");
-const tokenCreateHelper_1 = require("../../application/helpers/tokenCreateHelper");
+const tokenCreateHelper_1 = require("../../application/services/tokenCreateHelper");
 const loger_1 = require("../../shared/helpers/loger");
 const authMiddleware = async (req, res, next) => {
     try {
@@ -34,7 +34,7 @@ const authMiddleware = async (req, res, next) => {
                 const decoded = await (0, jsonWebTokenVerify_1.verifyToken)(currRefreshToken);
                 const decodedredisKey = decoded.redisKey;
                 const userSession = await (0, sessionStore_1.getUserSession)(decodedredisKey);
-                if (!userSession)
+                if (!userSession || !userSession.refreshToken || !userSession.user)
                     return next(new AppError_1.AppError(ResponseMessages_1.USER_MESSAGE.LOGIN.UNAUTHORIZED, StatusCodes_1.HTTP_STATUS.UNAUTHORIZED));
                 const hashedRefreshToken = (0, hashToken_1.hashToken)(currRefreshToken);
                 if (userSession.refreshToken !== hashedRefreshToken)

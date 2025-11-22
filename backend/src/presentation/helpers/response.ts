@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { HTTP_STATUS } from "../../constants/StatusCodes";
-import { USER_MESSAGE } from "../../constants";
+import { COMMON_MESSAGE, USER_MESSAGE } from "../../constants";
 interface ApiResponse<T = any> {
   message?: string;
   data?: T;
@@ -20,6 +20,9 @@ export const success = <T>(res: Response, data: T, message?: string, statusCode:
   return res.status(statusCode).json({ success: true, response });
 };
 
+export const operationSuccess = (res:Response)=>{
+
+}
 
 export const created = <T>(res: Response, data: T, message?: string) => {
   return success(res, data, message, HTTP_STATUS.CREATED);
@@ -61,12 +64,12 @@ export const errorResponse = (res: Response, message: string, statusCode: number
 
 
 // Auth-specific responses
-export const authSuccess = <T>(res: Response, data: T, message: string ) => {
+export const authSuccess = <T>(res: Response, data: T, message: string = COMMON_MESSAGE.SUCCESS) => {
   return success(res, data, message);
 };
 
-export const loginSuccess = (res: Response, user: any ) => {
-  return authSuccess(res,{
+export const loginSuccess = (res: Response, user: any) => {
+  return authSuccess(res, {
     user: {
       username: user.username,
       email: user.email
@@ -81,6 +84,5 @@ export const registerSuccess = (res: Response, user: any) => {
       username: user.username,
       email: user.email,
     }
-  }, USER_MESSAGE.REGISTER.REGISTRATION_SUCCESS); 
+  }, USER_MESSAGE.REGISTER.REGISTRATION_SUCCESS);
 };
- 

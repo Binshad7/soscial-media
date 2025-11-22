@@ -5,16 +5,15 @@ const cookieHelper_1 = require("../helpers/cookieHelper");
 const loger_1 = require("../../shared/helpers/loger");
 const response_1 = require("../helpers/response");
 class UserController {
-    constructor(registerUser, loginUser, sendFollowReq, acceptFollowReq, rejecttFollowReq) {
-        this.registerUser = registerUser;
-        this.loginUser = loginUser;
-        this.sendFollowReq = sendFollowReq;
-        this.acceptFollowReq = acceptFollowReq;
-        this.rejecttFollowReq = rejecttFollowReq;
+    constructor(_registerUserUseCase, _loginUserUseCase, _sendFollowReqUseCase, _acceptFollowReqUseCase, _rejecttFollowReqUseCase) {
+        this._registerUserUseCase = _registerUserUseCase;
+        this._loginUserUseCase = _loginUserUseCase;
+        this._sendFollowReqUseCase = _sendFollowReqUseCase;
+        this._acceptFollowReqUseCase = _acceptFollowReqUseCase;
+        this._rejecttFollowReqUseCase = _rejecttFollowReqUseCase;
         this.register = async (req, res, next) => {
             try {
-                console.log('end point reach here ');
-                const { username, email, accessToken, refreshToken } = await this.registerUser.execute(req.body);
+                const { username, email, accessToken, refreshToken } = await this._registerUserUseCase.execute(req.body);
                 (0, cookieHelper_1.setAuthCookie)(res, accessToken, refreshToken);
                 loger_1.logger.info(`Registration successful for user: ${username}`, { requestId: req.requestId });
                 return (0, response_1.registerSuccess)(res, { username, email });
@@ -26,7 +25,7 @@ class UserController {
         };
         this.login = async (req, res, next) => {
             try {
-                const { username, email, accessToken, refreshToken } = await this.loginUser.execute(req.body.email, req.body.password);
+                const { username, email, accessToken, refreshToken } = await this._loginUserUseCase.execute(req.body.email, req.body.password);
                 (0, cookieHelper_1.setAuthCookie)(res, accessToken, refreshToken);
                 loger_1.logger.info(`Login successful for user: ${username}`, { requestId: req.requestId });
                 return (0, response_1.loginSuccess)(res, { username, email });
@@ -36,13 +35,22 @@ class UserController {
                 next(error);
             }
         };
+        this.userValidCheck = async (req, res, next) => {
+            try {
+                const user = req.user;
+                (0, response_1.authSuccess)(res, user);
+            }
+            catch (error) {
+                next(error);
+            }
+        };
         this.sendFollowRequest = async (req, res, next) => {
             try {
                 const { receiverId } = req.params; // sending request to this user
                 const senderId = req.user?._id;
-                const { message } = await this.sendFollowReq.execute(senderId, receiverId);
+                const { message } = await this._sendFollowReqUseCase.execute(senderId, receiverId);
                 loger_1.logger.info(`Follow request sent: ${message}`, { requestId: req.requestId, senderId, receiverId: receiverId });
-                return (0, response_1.success)(res, { message }, "Follow request sent successfully");
+                return (0, response_1.success)(res, message);
             }
             catch (error) {
                 loger_1.logger.error(`Follow request failed: ${error.message}`, { requestId: req.requestId });
@@ -53,7 +61,7 @@ class UserController {
             try {
                 const { receiverId } = req.params; // accept request to this user
                 const senderId = req.user?._id;
-                const message = await this.acceptFollowReq.execute(senderId, receiverId);
+                const message = await this._acceptFollowReqUseCase.execute(senderId, receiverId);
                 loger_1.logger.info(`Follow request sent: ${message}`, { requestId: req.requestId, senderId, receiverId });
                 return (0, response_1.success)(res, { message });
             }
@@ -66,7 +74,7 @@ class UserController {
             try {
                 const { receiverId } = req.params; // reject request to this user
                 const senderId = req.user?._id || '';
-                const message = await this.rejecttFollowReq.execute(senderId, receiverId);
+                const message = await this._rejecttFollowReqUseCase.execute(senderId, receiverId);
                 loger_1.logger.info(`Follow request sent: ${message}`, { requestId: req.requestId, senderId, receiverId });
                 return (0, response_1.success)(res, { message }, "Follow request sent successfully");
             }

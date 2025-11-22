@@ -35,11 +35,11 @@ exports.securityHeaders = (0, helmet_1.default)({
             imgSrc: ["'self'", "data:", "https:"], // domain and inline and cdns
         },
     },
-    crossOriginEmbedderPolicy: false, // Disable for API
+    crossOriginEmbedderPolicy: false, // Disable for  our API
     hsts: {
-        maxAge: 31536000,
+        maxAge: 31536000, //how long should be remember to use https
         includeSubDomains: true,
-        preload: true
+        preload: true // auto convention to http to https in browsers
     }
 });
 // MongoDB injection protection
@@ -83,10 +83,10 @@ const xssProtection = (req, res, next) => {
     const sanitizeInput = (obj) => {
         if (typeof obj === 'string') {
             return obj
-                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // for the js scripts
+                .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '') // iframe
                 .replace(/javascript:/gi, '')
-                .replace(/on\w+\s*=/gi, '');
+                .replace(/on\w+\s*=/gi, ''); // remove atributes
         }
         if (typeof obj === 'object' && obj !== null) {
             for (const key in obj) {
@@ -96,7 +96,6 @@ const xssProtection = (req, res, next) => {
         return obj;
     };
     req.body = sanitizeInput(req.body);
-    // ✅ mutate instead of reassign
     if (req.query)
         sanitizeInput(req.query);
     if (req.params)

@@ -1,8 +1,8 @@
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../../shared/helpers/loger';
-import { ENV } from '../../config/env_vars';
+import { logger } from '../../shared/utils/loger';
+import { ENV } from '../../shared/config/env.config';
 
 
 

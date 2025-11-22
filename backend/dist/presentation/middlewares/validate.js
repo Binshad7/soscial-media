@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validate = void 0;
-const AppError_1 = require("../../domain/errors/AppError");
+const AppError_1 = require("../../domain/Exceptions/AppError");
 const StatusCodes_1 = require("../../constants/StatusCodes");
 const validate = (schema, source = "body") => (req, _res, next) => {
     const data = source === "body" ? req.body : source === "query" ? req.query : req.params;

@@ -13,7 +13,7 @@ exports.logger = winston_1.default.createLogger({
     defaultMeta: { service: "user-service" },
     transports: [
         new winston_1.default.transports.Console(),
-        // new winston.transports.File({ filename: "error.log", level: "error" }),
-        // new winston.transports.File({ filename: "combined.log" }),
+        new winston_1.default.transports.File({ filename: "error.log", level: "error" }),
+        new winston_1.default.transports.File({ filename: "combined.log" }),
     ],
 });

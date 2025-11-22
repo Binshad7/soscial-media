@@ -9,18 +9,14 @@ import GoogleIcon from '@/components/ui/GoogleIcon';
 import GitHubIcon from '@/components/ui/GitHubIcon';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { MESSAGES } from '@/constant/message'
 import { toast } from 'react-toastify';
+
 export default function RegisterPage() {
 
     const [error, setError] = useState<string | null>(null);
     const router = useRouter()
     const { user, loginUser } = useAuth();
-    useEffect(() => {
-        if (user) {
-            router.push('/')
-        }
-    }, [])
+  
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -40,12 +36,8 @@ export default function RegisterPage() {
             const newUser = await register(payload);
             loginUser(newUser)
             toast.success(newUser.message)
-            router.push('/')
+            router.push('/');
         } catch (err: any) {
-            console.log(err);
-
-            console.log('e1', err.response.data.error);
-
             toast.error(err?.response?.data?.error)
             setError('Registration failed');
         }

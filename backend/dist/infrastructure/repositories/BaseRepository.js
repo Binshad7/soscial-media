@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseRepository = void 0;
-const AppError_1 = require("../../domain/errors/AppError");
+const AppError_1 = require("../../domain/Exceptions/AppError");
 const loger_1 = require("../../shared/helpers/loger");
-const errors_1 = require("../../presentation/helpers/errors");
+const errors_1 = require("../../shared/helpers/errors");
 class BaseRepository {
     async execute(operation) {
         try {

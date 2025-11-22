@@ -1,27 +1,27 @@
 import { NextFunction, Request, Response } from "express";
-import { RegisterUser } from "../../application/usecases/user/RegisterUser";
-import { LoginUser } from "../../application/usecases/user/LoginUser";
+import { RegisterUserUseCase } from "../../application/usecases/user/RegisterUserUseCase";
+import { LoginUserUseCase } from "../../application/usecases/user/LoginUserUseCase";
 import { setAuthCookie } from "../helpers/cookieHelper";
-import { sendFollowRequest } from "../../application/usecases/user/SendFollowRequest";
-import { AccepttFollowRequest } from "../../application/usecases/user/AcceptFollowRequest";
-import { RejectFollowRequest } from "../../application/usecases/user/RejectFollowRequest";
-import { logger } from "../../shared/helpers/loger";
+import { SendFollowRequestUseCase } from "../../application/usecases/user/SendFollowRequestUseCase";
+import { AccepttFollowRequestUseCase } from "../../application/usecases/user/AcceptFollowRequestUseCase";
+import { RejectFollowRequestUseCase } from "../../application/usecases/user/RejectFollowRequestUseCase";
+import { logger } from "../../shared/utils/loger";
 import { authSuccess, loginSuccess, registerSuccess, success } from "../helpers/response";
+
 
 export class UserController {
     constructor(
-        private registerUser: RegisterUser,
-        private loginUser: LoginUser,
-        private sendFollowReq: sendFollowRequest,
-        private acceptFollowReq: AccepttFollowRequest,
-        private rejecttFollowReq: RejectFollowRequest
+        private readonly _registerUserUseCase: RegisterUserUseCase,
+        private readonly _loginUserUseCase: LoginUserUseCase,
+        private readonly _sendFollowReqUseCase: SendFollowRequestUseCase,
+        private readonly _acceptFollowReqUseCase: AccepttFollowRequestUseCase,
+        private readonly _rejecttFollowReqUseCase: RejectFollowRequestUseCase
 
     ) { }
 
     register = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            console.log('end point reach here ')
-            const { username, email, accessToken, refreshToken } = await this.registerUser.execute(req.body);
+            const { username, email, accessToken, refreshToken } = await this._registerUserUseCase.execute(req.body);
             setAuthCookie(res, accessToken, refreshToken);
             logger.info(`Registration successful for user: ${username}`, { requestId: req.requestId });
             return registerSuccess(res, { username, email });
@@ -33,7 +33,7 @@ export class UserController {
 
     login = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { username, email, accessToken, refreshToken } = await this.loginUser.execute(req.body.email, req.body.password);
+            const { username, email, accessToken, refreshToken } = await this._loginUserUseCase.execute(req.body.email, req.body.password);
             setAuthCookie(res, accessToken, refreshToken);
             logger.info(`Login successful for user: ${username}`, { requestId: req.requestId });
             return loginSuccess(res, { username, email });
@@ -43,13 +43,22 @@ export class UserController {
         }
     }
 
+    userValidCheck = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const user = req.user;
+            authSuccess(res, user);
+        } catch (error: any) {
+            next(error)
+        }
+    }
+
     sendFollowRequest = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { receiverId } = req.params; // sending request to this user
             const senderId = req.user?._id;
-            const { message } = await this.sendFollowReq.execute(senderId, receiverId);
+            const { message } = await this._sendFollowReqUseCase.execute(senderId, receiverId);
             logger.info(`Follow request sent: ${message}`, { requestId: req.requestId, senderId, receiverId: receiverId });
-            return success(res, { message }, "Follow request sent successfully");
+            return success(res, message,);
         } catch (error: any) {
             logger.error(`Follow request failed: ${error.message}`, { requestId: req.requestId });
             next(error);
@@ -60,7 +69,7 @@ export class UserController {
         try {
             const { receiverId } = req.params; // accept request to this user
             const senderId = req.user?._id;
-            const message = await this.acceptFollowReq.execute(senderId, receiverId);
+            const message = await this._acceptFollowReqUseCase.execute(senderId, receiverId);
             logger.info(`Follow request sent: ${message}`, { requestId: req.requestId, senderId, receiverId });
             return success(res, { message });
         } catch (error: any) {
@@ -73,7 +82,7 @@ export class UserController {
         try {
             const { receiverId } = req.params; // reject request to this user
             const senderId = req.user?._id || '';
-            const message = await this.rejecttFollowReq.execute(senderId, receiverId);
+            const message = await this._rejecttFollowReqUseCase.execute(senderId, receiverId);
             logger.info(`Follow request sent: ${message}`, { requestId: req.requestId, senderId, receiverId });
             return success(res, { message }, "Follow request sent successfully");
         } catch (error: any) {

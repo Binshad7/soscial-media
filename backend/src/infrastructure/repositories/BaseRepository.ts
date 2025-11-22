@@ -1,6 +1,6 @@
-import { AppError } from "../../domain/errors/AppError";
-import { logger } from "../../shared/helpers/loger";
-import { InternalServerError, Conflict } from "../../presentation/helpers/errors";
+import { AppError } from "../../domain/error/AppError";
+import { logger } from "../../shared/utils/loger";
+import { InternalServerError, Conflict } from "../../shared/helpers/errors";
 
 export abstract class BaseRepository {
   protected async execute<T>(operation: () => Promise<T>): Promise<T> {

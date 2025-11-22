@@ -8,12 +8,12 @@ const ChatRepositoryImpl_1 = require("../infrastructure/repositories/ChatReposit
 const GroupRepositoryImpl_1 = require("../infrastructure/repositories/GroupRepositoryImpl");
 const VideoCallRepositoryImpl_1 = require("../infrastructure/repositories/VideoCallRepositoryImpl");
 // Usecases
-const RegisterUser_1 = require("../application/usecases/user/RegisterUser");
-const LoginUser_1 = require("../application/usecases/user/LoginUser");
+const RegisterUserUseCase_1 = require("../application/usecases/user/RegisterUserUseCase");
+const LoginUserUseCase_1 = require("../application/usecases/user/LoginUserUseCase");
 // Follow
-const AcceptFollowRequest_1 = require("../application/usecases/user/AcceptFollowRequest");
-const RejectFollowRequest_1 = require("../application/usecases/user/RejectFollowRequest");
-const SendFollowRequest_1 = require("../application/usecases/user/SendFollowRequest");
+const AcceptFollowRequestUseCase_1 = require("../application/usecases/user/AcceptFollowRequestUseCase");
+const RejectFollowRequestUseCase_1 = require("../application/usecases/user/RejectFollowRequestUseCase");
+const SendFollowRequestUseCase_1 = require("../application/usecases/user/SendFollowRequestUseCase");
 // messages
 const SendMessage_1 = require("../application/usecases/chat/SendMessage");
 const CreateGroup_1 = require("../application/usecases/group/CreateGroup");
@@ -29,11 +29,11 @@ const chatRepository = new ChatRepositoryImpl_1.ChatRepository();
 const groupRepository = new GroupRepositoryImpl_1.GroupRepository();
 const videoCallRepository = new VideoCallRepositoryImpl_1.VideoCallRepository();
 // Usecases
-const registerUser = new RegisterUser_1.RegisterUser(userRepository);
-const loginUser = new LoginUser_1.LoginUser(userRepository);
-const sendFollowReq = new SendFollowRequest_1.sendFollowRequest(userRepository);
-const acceptFollowReq = new AcceptFollowRequest_1.AccepttFollowRequest(userRepository);
-const rejectFollowReq = new RejectFollowRequest_1.RejectFollowRequest(userRepository);
+const registerUser = new RegisterUserUseCase_1.RegisterUserUseCase(userRepository);
+const loginUser = new LoginUserUseCase_1.LoginUserUseCase(userRepository);
+const sendFollowReq = new SendFollowRequestUseCase_1.SendFollowRequestUseCase(userRepository);
+const acceptFollowReq = new AcceptFollowRequestUseCase_1.AccepttFollowRequestUseCase(userRepository);
+const rejectFollowReq = new RejectFollowRequestUseCase_1.RejectFollowRequestUseCase(userRepository);
 const sendMessage = new SendMessage_1.SendMessage(chatRepository);
 const createGroup = new CreateGroup_1.CreateGroup(groupRepository);
 const startVideoCall = new StartVideoCall_1.StartVideoCall(videoCallRepository);

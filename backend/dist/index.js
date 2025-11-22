@@ -1,55 +1,52 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const morgan_1 = __importDefault(require("morgan"));
-const connectDB_1 = require("./infrastructure/db/mongoose/connectDB"); // db connection   
-const redis_Client_1 = require("./infrastructure/services/redis/redis.Client"); // redis client connection
-const userRoutes_1 = __importDefault(require("./presentation/routes/userRoutes"));
-const chatRoutes_1 = __importDefault(require("./presentation/routes/chatRoutes"));
-const groupRoutes_1 = __importDefault(require("./presentation/routes/groupRoutes"));
-const videoCallRoutes_1 = __importDefault(require("./presentation/routes/videoCallRoutes"));
-// AuthMiddleware
-const authMiddleware_1 = require("./presentation/middlewares/authMiddleware");
-// ErrorHandler middleware
-const errorHandler_1 = require("./presentation/middlewares/errorHandler");
-// Security and utility middleware
-const security_1 = require("./presentation/middlewares/security");
-const rateLimiter_1 = require("./presentation/middlewares/rateLimiter");
-const env_vars_1 = require("./config/env_vars"); // env var
-const loger_1 = require("./shared/helpers/loger");
-const app = (0, express_1.default)();
-// app.set('trust proxy', true); for production to get actual ip adress
-// CORS and parsing middleware
-app.use((0, cors_1.default)(security_1.corsOptions));
-// Security middleware (order matters!)
-app.use(security_1.securityHeaders);
-// app.use(mongoSanitization);
-// // app.use(xssProtection);
-app.use(security_1.requestSizeLimiter);
-// app.use(requestId);
-app.use((0, cookie_parser_1.default)()); // to access data from cookie and session
-app.use(express_1.default.json({ limit: '10mb' }));
-app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
-// Logging
-app.use((0, morgan_1.default)('dev', {
-    stream: {
-        write: (message) => loger_1.logger.info(message.trim())
-    }
-}));
-// Rate limiting
-app.use(rateLimiter_1.generalLimiter);
-app.use("/api/v1/users", userRoutes_1.default);
-app.use("/api/v1/users/chats", authMiddleware_1.authMiddleware, chatRoutes_1.default);
-app.use("/api/v1/users/groups", authMiddleware_1.authMiddleware, groupRoutes_1.default);
-app.use("/api/v1/users/videocalls", authMiddleware_1.authMiddleware, videoCallRoutes_1.default);
-app.use(errorHandler_1.errorHandler);
-app.listen(env_vars_1.ENV.PORT, () => {
-    (0, connectDB_1.connectDB)();
-    (0, redis_Client_1.connectRedis)();
-    loger_1.logger.info("server running success fully");
-});
+// import express from 'express';
+// import cors from 'cors';
+// import cookieParser from 'cookie-parser'
+// import morgan from 'morgan'
+// import { connectDB } from './config/connectDB';  // db connection   
+// import { connectRedis } from './config/redis.Client'; // redis client connection
+// import userRoutes from "./presentation/routes/userRoutes";
+// import chatRoutes from "./presentation/routes/chatRoutes";
+// import groupRoutes from "./presentation/routes/groupRoutes";
+// import videoCallRoutes from "./presentation/routes/videoCallRoutes";
+// // AuthMiddleware
+// import { authMiddleware } from "./presentation/middlewares/authMiddleware";
+// // ErrorHandler middleware
+// import { errorHandler } from "./presentation/middlewares/errorHandler";
+// // Security and utility middleware
+// import { corsOptions, securityHeaders, mongoSanitization, requestSizeLimiter, xssProtection } from "./presentation/middlewares/security";
+// import { requestId } from "./presentation/middlewares/requestId";
+// import { generalLimiter } from "./presentation/middlewares/rateLimiter";
+// import { ENV } from './config/env_vars' // env var
+// import { logger } from './shared/helpers/loger';
+// const app = express();
+// // app.set('trust proxy', true); for production to get actual ip adress
+// // CORS and parsing middleware
+// app.use(cors(corsOptions));
+// // Security middleware (order matters!)
+// app.use(securityHeaders);
+// // app.use(mongoSanitization);
+// // // app.use(xssProtection);
+// app.use(requestSizeLimiter);
+// // app.use(requestId);
+// app.use(cookieParser()); // to access data from cookie and session
+// app.use(express.json({ limit: '10mb' }));
+// app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// // Logging
+// app.use(morgan('dev', {
+//   stream: {
+//     write: (message: string) => logger.info(message.trim())
+//   }
+// }));
+// // Rate limiting
+// app.use(generalLimiter);
+// app.use("/api/v1/users", userRoutes);
+// app.use("/api/v1/users/chats", authMiddleware, chatRoutes);
+// app.use("/api/v1/users/groups", authMiddleware, groupRoutes);
+// app.use("/api/v1/users/videocalls", authMiddleware, videoCallRoutes);
+// app.use(errorHandler);
+// app.listen(ENV.PORT, () => {
+//   connectDB();
+//   connectRedis()
+//   logger.info("server running ")
+// })

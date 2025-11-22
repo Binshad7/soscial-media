@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { ENV } from "../../config/env_vars";
+import { ENV } from "../../shared/config/env.config";
 import { COOKIE_VAR } from "../../constants/cookieVariable";
 
 

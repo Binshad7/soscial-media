@@ -6,13 +6,13 @@ import { GroupRepository } from "../infrastructure/repositories/GroupRepositoryI
 import { VideoCallRepository } from "../infrastructure/repositories/VideoCallRepositoryImpl";
 
 // Usecases
-import { RegisterUser } from "../application/usecases/user/RegisterUser";
-import { LoginUser } from "../application/usecases/user/LoginUser";
+import { RegisterUserUseCase } from "../application/usecases/user/RegisterUserUseCase";
+import { LoginUserUseCase } from "../application/usecases/user/LoginUserUseCase";
 // Follow
 
-import { AccepttFollowRequest } from "../application/usecases/user/AcceptFollowRequest";
-import { RejectFollowRequest } from "../application/usecases/user/RejectFollowRequest";
-import { sendFollowRequest } from "../application/usecases/user/SendFollowRequest";
+import { AccepttFollowRequestUseCase } from "../application/usecases/user/AcceptFollowRequestUseCase";
+import { RejectFollowRequestUseCase } from "../application/usecases/user/RejectFollowRequestUseCase";
+import { SendFollowRequestUseCase } from "../application/usecases/user/SendFollowRequestUseCase";
 // messages
 import { SendMessage } from "../application/usecases/chat/SendMessage";
 import { CreateGroup } from "../application/usecases/group/CreateGroup";
@@ -30,11 +30,13 @@ const groupRepository = new GroupRepository();
 const videoCallRepository = new VideoCallRepository();
 
 // Usecases
-const registerUser = new RegisterUser(userRepository);
-const loginUser = new LoginUser(userRepository);
-const sendFollowReq = new sendFollowRequest(userRepository);
-const acceptFollowReq = new AccepttFollowRequest(userRepository);
-const rejectFollowReq = new RejectFollowRequest(userRepository);
+const registerUser = new RegisterUserUseCase(userRepository);
+const loginUser = new LoginUserUseCase(userRepository);
+const sendFollowReq = new SendFollowRequestUseCase(userRepository);
+const acceptFollowReq = new AccepttFollowRequestUseCase(userRepository);
+const rejectFollowReq = new RejectFollowRequestUseCase(userRepository);
+
+
 const sendMessage = new SendMessage(chatRepository);
 const createGroup = new CreateGroup(groupRepository);
 const startVideoCall = new StartVideoCall(videoCallRepository);

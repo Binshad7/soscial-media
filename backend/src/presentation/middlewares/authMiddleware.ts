@@ -5,10 +5,10 @@ import { COOKIE_VAR } from "../../constants/cookieVariable";
 import { verifyToken } from "../helpers/jsonWebTokenVerify";
 import { setAuthCookie } from "../helpers/cookieHelper";
 import { deleteUserSession, getUserSession, storeUserSession } from "../../infrastructure/services/redis/sessionStore";
-import { AppError } from "../../domain/errors/AppError";
+import { AppError } from "../../domain/error/AppError";
 import { hashToken } from "../../shared/helpers/hashToken";
-import { createTokenPair } from "../../application/helpers/tokenCreateHelper";
-import { logger } from "../../shared/helpers/loger";
+import { createTokenPair } from "../../application/services/tokenCreateHelper";
+import { logger } from "../../shared/utils/loger";
 
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -35,7 +35,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         const decodedredisKey = decoded.redisKey;
 
         const userSession = await getUserSession(decodedredisKey);
-        if (!userSession) return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
+        if (!userSession || !userSession.refreshToken || !userSession.user) return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
         const hashedRefreshToken = hashToken(currRefreshToken);
         if (userSession.refreshToken !== hashedRefreshToken) return next(new AppError(USER_MESSAGE.LOGIN.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED));
 

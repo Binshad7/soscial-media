@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerSuccess = exports.loginSuccess = exports.authSuccess = exports.errorResponse = exports.paginated = exports.noContent = exports.created = exports.success = void 0;
+exports.registerSuccess = exports.loginSuccess = exports.authSuccess = exports.errorResponse = exports.paginated = exports.noContent = exports.created = exports.operationSuccess = exports.success = void 0;
 const StatusCodes_1 = require("../../constants/StatusCodes");
 const constants_1 = require("../../constants");
 const success = (res, data, message, statusCode = StatusCodes_1.HTTP_STATUS.OK) => {
@@ -11,6 +11,9 @@ const success = (res, data, message, statusCode = StatusCodes_1.HTTP_STATUS.OK) 
     return res.status(statusCode).json({ success: true, response });
 };
 exports.success = success;
+const operationSuccess = (res) => {
+};
+exports.operationSuccess = operationSuccess;
 const created = (res, data, message) => {
     return (0, exports.success)(res, data, message, StatusCodes_1.HTTP_STATUS.CREATED);
 };
@@ -40,7 +43,7 @@ const errorResponse = (res, message, statusCode) => {
 };
 exports.errorResponse = errorResponse;
 // Auth-specific responses
-const authSuccess = (res, data, message) => {
+const authSuccess = (res, data, message = constants_1.COMMON_MESSAGE.SUCCESS) => {
     return (0, exports.success)(res, data, message);
 };
 exports.authSuccess = authSuccess;
